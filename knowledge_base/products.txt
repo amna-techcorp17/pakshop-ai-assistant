@@ -1,0 +1,21 @@
+PAKISTAN E-COMMERCE STORE - PRODUCT CATALOG
+
+ELECTRONICS:
+- Samsung Galaxy A54 | Price: Rs. 89,999 | Stock: Available | Warranty: 1 year
+- iPhone 13 | Price: Rs. 189,999 | Stock: Available | Warranty: 1 year
+- Xiaomi Redmi Note 12 | Price: Rs. 45,999 | Stock: Available | Warranty: 1 year
+- HP Laptop 15s | Price: Rs. 125,000 | Stock: Available | Warranty: 1 year
+- JBL Bluetooth Speaker | Price: Rs. 12,500 | Stock: Available | Warranty: 6 months
+
+CLOTHING:
+- Mens Shalwar Kameez Cotton | Price: Rs. 2,500 | Sizes: S, M, L, XL
+- Womens Lawn Suit 3-piece | Price: Rs. 3,800 | Colors: Blue, Green, Pink
+- Kids School Uniform | Price: Rs. 1,800 | Sizes: 4-12 years
+- Casual Sneakers | Price: Rs. 4,500 | Sizes: 38-44
+
+HOME APPLIANCES:
+- Dawlance Refrigerator 12 CFT | Price: Rs. 75,000 | Warranty: 2 years
+- Orient AC 1.5 Ton | Price: Rs. 115,000 | Warranty: 2 years
+- Anex Blender | Price: Rs. 3,200 | Warranty: 6 months
+
+PAYMENT METHODS: JazzCash, Easypaisa, Bank Transfer, Cash on Delivery
