@@ -20,37 +20,36 @@ The system features full **JWT-based user authentication**, **persistent chat hi
 
 
 
-## 🧠 Agent Flow
 
+```text
 User Query
-│
-▼
+    │
+    ▼
 ┌─────────────┐
 │ RouterAgent │  ← Classifies: 'search' or 'general'
 └──────┬──────┘
-│
-┌────┴────┐
-▼          ▼
+       │
+  ┌────┴────┐
+  ▼          ▼
 SearchAgent  GeneralAgent
-│
-▼
+  │
+  ▼
 NeedsAgent        ← Extracts customer requirements
-│
-▼
+  │
+  ▼
 ComparisonAgent   ← Compares shortlisted products
-│
-▼
+  │
+  ▼
 RecommendAgent    ← Picks best match with reasoning
-│
-└──────────────┐
-▼
-┌──────────────────┐
-│  EvaluatorAgent  │  ← Auto-scores response (1–10)
-└────────┬─────────┘
-▼
-Final Response → User
-
----
+  │
+  └──────────────┐
+                 ▼
+        ┌──────────────────┐
+        │  EvaluatorAgent  │  ← Auto-scores response (1–10)
+        └────────┬─────────┘
+                 ▼
+           Final Response → User
+```
 
 ## 🤖 Agent Breakdown
 
