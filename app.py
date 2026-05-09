@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -11,15 +12,16 @@ load_dotenv()
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class RegisterData(BaseModel):
     name: str
     email: str
-    password: str = Field(min_length=8, max_length=20)
+    password: str = Field(min_length=6, max_length=20)
 
 class LoginData(BaseModel):
     email: str
-    password: str = Field(min_length=8, max_length=20)
+    password: str = Field(min_length=6, max_length=20)
 
 class Message(BaseModel):
     role: str
@@ -39,10 +41,15 @@ from fastapi import HTTPException
 @app.post("/register")
 def register(data: RegisterData):
 
-    result = register_user(data.name, data.email, data.password)
+    print("REGISTER HIT:", data)
 
-    print("REGISTER RESULT:", result)   
+    result = register_user(
+        data.name,
+        data.email,
+        str(data.password)
+    )
 
+    print("REGISTER RESULT:", result)
 
     if not result.get("success"):
         raise HTTPException(status_code=400, detail=result.get("error"))
@@ -57,11 +64,21 @@ def register(data: RegisterData):
 
 @app.post("/login")
 def login(data: LoginData):
+
     result = login_user(data.email, data.password)
-    if not result["success"]:
-        raise HTTPException(status_code=401, detail=result["error"])
+
+    print("LOGIN RESULT:", result)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
     token = create_token(result["user_id"], result["email"])
-    return {"token": token, "name": result["name"], "email": result["email"]}
+
+    return {
+        "token": token,
+        "name": result["name"],
+        "email": result["email"]
+    }
 
 @app.get("/sessions")
 def get_sessions(authorization: str = Header(None)):
