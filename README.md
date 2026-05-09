@@ -222,6 +222,7 @@ passlib[bcrypt]
 
 ## 📁 Project Structure
 
+```text
 pakshop-ai-assistant/
 │
 ├── agents/
@@ -253,8 +254,6 @@ pakshop-ai-assistant/
 ├── pakcommerce.db
 ├── .gitignore
 └── README.md
-
-
 ```
 
 
