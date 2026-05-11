@@ -1,6 +1,39 @@
-venv/
-__pycache__/
+
 .env
-*.pyc
-*.db
+.env.*
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Vector Store (auto-generated)
 vector_store/
+*.faiss
+*.pkl
+
+# Databases 
+*.db
+*.sqlite
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

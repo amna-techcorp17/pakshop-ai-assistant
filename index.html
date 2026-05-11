@@ -3,593 +3,888 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pak-Commerce AI</title>
+<title>PakShop AI — Smart Shopping Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: #0f0f1a; color: #e0e0e0; height: 100vh; display: flex; overflow: hidden; }
-
-#auth-modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
+:root {
+  --bg:#0F172A; --surface:#1E293B; --surface2:#253347;
+  --accent:#6366F1; --accent2:#818CF8; --glow:rgba(99,102,241,0.15);
+  --text:#F1F5F9; --text2:#94A3B8; --text3:#64748B;
+  --border:rgba(255,255,255,0.07); --border2:rgba(99,102,241,0.3);
+  --green:#10B981; --amber:#F59E0B; --red:#EF4444;
+  --sw:220px; --pw:340px; --r:12px; --rs:8px;
 }
-#auth-modal.show { display: flex; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;font-size:14px;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px;}
 
-.auth-box {
-    background: #1a1a2e;
-    border: 1px solid #2a2a4a;
-    border-radius: 16px;
-    padding: 40px;
-    width: 400px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    position: relative;
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sw);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;transition:width .3s,padding .3s;overflow:hidden;}
+#sidebar.closed{width:0;padding:0;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 4px;margin-bottom:24px;}
+.brand-ic{width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.brand-tx h2{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;white-space:nowrap;}
+.brand-tx p{font-size:11px;color:var(--text3);white-space:nowrap;}
+.nav-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin-bottom:5px;white-space:nowrap;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--rs);cursor:pointer;color:var(--text2);font-size:13px;transition:all .2s;margin-bottom:2px;white-space:nowrap;user-select:none;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:var(--glow);color:var(--accent2);}
+.nav-item .ic{font-size:16px;flex-shrink:0;}
+.nbadge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500;}
+.sdiv{height:1px;background:var(--border);margin:12px 0;}
+.u-card{margin-top:auto;background:var(--surface2);border-radius:var(--r);padding:12px;cursor:pointer;flex-shrink:0;}
+.u-card-in{display:flex;align-items:center;gap:10px;}
+.u-av{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#fff;flex-shrink:0;}
+.u-tx h4{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+.u-tx p{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+#hdr{padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hl{display:flex;align-items:center;gap:12px;}
+.tog{width:32px;height:32px;border:none;background:var(--surface);border-radius:var(--rs);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.tog:hover{background:var(--surface2);}
+.ht h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.ht p{font-size:11px;color:var(--text3);}
+.hr{display:flex;gap:8px;align-items:center;}
+.cpill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:6px 10px;font-size:12px;color:var(--text2);}
+.thbtn{width:32px;height:32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:15px;}
+.lbtn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;}
+.lbtn:hover{opacity:.85;}
+
+#welcome{padding:16px 24px 0;flex-shrink:0;}
+#welcome h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+#welcome p{font-size:12px;color:var(--text3);margin-top:3px;}
+
+#chips{padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.chip:hover{border-color:var(--accent);color:var(--accent2);background:var(--glow);}
+
+#chat-area{flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:16px;}
+.mrow{display:flex;align-items:flex-start;gap:10px;animation:fu .3s ease;}
+.mrow.u{flex-direction:row-reverse;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.av.b{background:var(--accent);}
+.av.u{background:var(--surface2);}
+
+/* FIX: bubble width properly fills, no weird wrapping */
+.bub{max-width:68%;padding:12px 16px;border-radius:var(--r);font-size:13px;line-height:1.7;word-break:break-word;white-space:pre-wrap;}
+.bub.b{background:var(--surface);border:1px solid var(--border);border-radius:4px 12px 12px 12px;}
+.bub.u{background:var(--accent);color:#fff;border-radius:12px 4px 12px 12px;}
+.mtime{font-size:10px;color:var(--text3);margin-top:4px;}
+/* FIX: typing bubble compact — no big empty space */
+.typbub{display:inline-flex;align-items:center;gap:5px;padding:10px 14px;}
+.typbub span{width:6px;height:6px;background:var(--accent2);border-radius:50%;animation:bl 1.2s infinite;flex-shrink:0;}
+.typbub span:nth-child(2){animation-delay:.2s;}
+.typbub span:nth-child(3){animation-delay:.4s;}
+.typlbl{font-size:11px;color:var(--text3);white-space:nowrap;}
+@keyframes bl{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+
+/* FIX: input box — no premature wrapping */
+#iarea{padding:12px 24px 16px;flex-shrink:0;border-top:1px solid var(--border);}
+#iwrap{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 14px;transition:border-color .2s;}
+#iwrap:focus-within{border-color:var(--border2);}
+#uinput{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;
+  resize:none;height:24px;max-height:120px;
+  overflow-y:hidden;line-height:1.6;
+  word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;
+  width:0;min-width:0;
 }
+#uinput::placeholder{color:var(--text3);white-space:nowrap;}
+.ibtn{width:32px;height:32px;border:none;border-radius:var(--rs);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .2s;}
+#vbtn{background:var(--surface2);color:var(--text2);}
+#vbtn:hover{background:var(--glow);color:var(--accent2);}
+#vbtn.rec{background:#EF444420;color:var(--red);animation:pulse 1s infinite;}
+#sbtn{background:var(--accent);color:#fff;}
+#sbtn:hover{background:var(--accent2);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 
-.auth-close {
-    position: absolute;
-    top: 12px; right: 16px;
-    background: none;
-    border: none;
-    color: #6a7090;
-    font-size: 20px;
-    cursor: pointer;
-}
-.auth-close:hover { color: #fff; }
+/* ── PRODUCT PANEL ── */
+#ppanel{width:var(--pw);flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .3s;}
+#ppanel.closed{width:0;}
+.phdr{padding:14px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.phdr h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;}
+.phdr span{font-size:11px;color:var(--text3);}
+#pcontent{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;}
+.pempty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;text-align:center;padding:20px;}
+.pempty .ei{font-size:42px;opacity:.2;}
+.pempty p{font-size:12px;color:var(--text3);line-height:1.6;}
 
-.auth-logo { text-align: center; margin-bottom: 24px; }
-.auth-logo h1 {
-    font-size: 22px; font-weight: 700;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.auth-logo p { font-size: 13px; color: #6a7090; margin-top: 4px; }
+/* Product card */
+.pcard{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s,transform .2s;}
+.pcard:hover{border-color:var(--border2);transform:translateY(-1px);}
+.badge-row{display:flex;gap:6px;padding:10px 12px 0;}
+.bdg{font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;text-transform:uppercase;}
+.bdg.best{background:#10B98120;color:#10B981;}
+.bdg.val{background:#6366F120;color:#818CF8;}
+.bdg.bat{background:#F59E0B20;color:#F59E0B;}
 
-.auth-tabs { display: flex; background: #0f0f1a; border-radius: 10px; padding: 4px; margin-bottom: 24px; }
-.auth-tab { flex: 1; padding: 8px; border: none; background: transparent; color: #6a7090; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
-.auth-tab.active { background: linear-gradient(90deg, #667eea, #764ba2); color: white; }
+/* Product image area */
+.cimg{height:130px;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;margin:8px 12px;border-radius:var(--rs);overflow:hidden;}
+.cimg img{max-height:115px;max-width:100%;object-fit:contain;}
+.cimg .noimg{font-size:40px;opacity:.3;}
+.wbtn{position:absolute;top:6px;right:6px;width:26px;height:26px;border:none;border-radius:50%;background:var(--surface2);cursor:pointer;font-size:13px;transition:transform .2s;}
+.wbtn:hover{transform:scale(1.2);}
+.cbody{padding:8px 12px 12px;}
+.cname{font-size:13px;font-weight:500;margin-bottom:4px;}
+.cstars{display:flex;align-items:center;gap:4px;margin-bottom:7px;}
+.cstars .st{color:#F59E0B;font-size:12px;}
+.cstars .cnt{font-size:11px;color:var(--text3);}
+.cprice{font-size:17px;font-weight:700;color:var(--accent2);margin-bottom:7px;}
+.cplat{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.pdot{width:8px;height:8px;border-radius:50%;}
+.plbl{font-size:11px;color:var(--text3);}
+.vbtn{width:100%;padding:8px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;font-size:12px;font-weight:500;cursor:pointer;}
+.vbtn:hover{opacity:.85;}
 
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 12px; color: #8892b0; margin-bottom: 6px; }
-.form-group input { width: 100%; background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 8px; padding: 10px 14px; color: #e0e0e0; font-size: 14px; outline: none; transition: border-color 0.2s; }
-.form-group input:focus { border-color: #667eea; }
+/* Comparison table */
+.csec{background:var(--surface2);border-radius:var(--r);padding:12px;}
+.csec h4{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px;}
+.ctbl{width:100%;border-collapse:collapse;}
+.ctbl th{font-size:10px;color:var(--text3);text-align:left;padding-bottom:6px;font-weight:400;}
+.ctbl td{font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);}
+.ctbl tr:last-child td{border-bottom:none;}
+.pcell{display:flex;align-items:center;gap:6px;}
+.pi{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.sr{color:#F59E0B;font-size:11px;}
 
-.password-hints {
-    display: none;
-    margin-top: 8px;
-    padding: 10px 12px;
-    background: #0f0f1a;
-    border: 1px solid #2a2a4a;
-    border-radius: 8px;
-}
-.hint-item {
-    font-size: 12px;
-    color: #6a7090;
-    margin-bottom: 4px;
-    transition: color 0.2s;
-}
-.hint-item:last-child { margin-bottom: 0; }
-.hint-item.valid { color: #4ade80; }
+/* ── AUTH MODAL ── */
+#aoverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+#aoverlay.show{display:flex;}
+.abox{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:34px;width:380px;position:relative;animation:si .2s ease;}
+@keyframes si{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.acls{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;}
+.acls:hover{color:var(--text);}
+.alogo{text-align:center;margin-bottom:20px;}
+.alogo h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+.alogo p{font-size:12px;color:var(--text3);margin-top:4px;}
+.atabs{display:flex;background:var(--bg);border-radius:var(--rs);padding:3px;margin-bottom:18px;}
+.atab{flex:1;padding:7px;border:none;background:transparent;color:var(--text3);border-radius:var(--rs);cursor:pointer;font-size:13px;transition:all .2s;}
+.atab.active{background:var(--accent);color:#fff;}
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:10px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.fg input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif;}
+.fg input:focus{border-color:var(--border2);}
+.hbox{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;margin-top:6px;display:none;}
+.hi{font-size:11px;color:var(--text3);padding:2px 0;transition:color .2s;}
+.hi.ok{color:var(--green);}
+.sbtn2{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:11px;font-size:14px;font-weight:500;cursor:pointer;margin-top:6px;}
+.sbtn2:hover{opacity:.88;}
+.aerr{font-size:12px;color:var(--red);background:#EF444415;border:1px solid #EF444430;border-radius:var(--rs);padding:8px 10px;margin-top:10px;display:none;}
 
-.auth-btn { width: 100%; background: linear-gradient(90deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
-.auth-btn:hover { opacity: 0.9; }
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 20px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-.error-msg { background: #ff4b4b22; border: 1px solid #ff4b4b44; border-radius: 8px; padding: 10px; font-size: 13px; color: #ff6b6b; margin-top: 12px; display: none; }
-
-#sidebar {
-    width: 240px; min-width: 240px;
-    background: #1a1a2e; border-right: 1px solid #2a2a4a;
-    display: flex; flex-direction: column; padding: 16px 12px;
-    transition: all 0.3s; overflow: hidden;
-}
-#sidebar.collapsed { width: 0; min-width: 0; padding: 0; }
-
-.sidebar-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.sidebar-title { font-size: 14px; font-weight: 600; color: #c0c8f0; }
-
-.user-info { background: #667eea22; border: 1px solid #667eea44; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; font-size: 12px; }
-.user-name { color: #c0c8f0; font-weight: 500; }
-.user-email { color: #6a7090; font-size: 11px; }
-
-.logout-btn { background: #ff4b4b22; border: 1px solid #ff4b4b44; border-radius: 6px; padding: 5px 10px; color: #ff6b6b; font-size: 11px; cursor: pointer; width: 100%; margin-bottom: 8px; }
-.logout-btn:hover { background: #ff4b4b33; }
-
-.new-chat-btn { background: linear-gradient(90deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; padding: 9px 14px; font-size: 13px; cursor: pointer; width: 100%; margin-bottom: 12px; font-weight: 500; }
-
-.history-label { font-size: 11px; color: #6a7090; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-#chat-history { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-
-.history-item { display: flex; align-items: center; justify-content: space-between; background: #22223a; border: 1px solid #2a2a4a; border-radius: 8px; padding: 7px 10px; cursor: pointer; font-size: 12px; color: #a0a8d0; transition: all 0.2s; }
-.history-item:hover { background: #667eea22; border-color: #667eea55; }
-.history-item.active { background: #667eea22; border-color: #667eea; }
-.del-btn { background: none; border: none; color: #6a7090; cursor: pointer; font-size: 13px; }
-.del-btn:hover { color: #ff6b6b; }
-
-.sidebar-footer { font-size: 11px; color: #4a4a6a; text-align: center; padding-top: 12px; border-top: 1px solid #2a2a4a; margin-top: 8px; }
-
-#toggle-btn { position: fixed; left: 240px; top: 50%; transform: translateY(-50%); background: #667eea; color: white; border: none; border-radius: 0 8px 8px 0; padding: 10px 6px; cursor: pointer; font-size: 12px; z-index: 100; transition: left 0.3s; }
-#toggle-btn.collapsed { left: 0; }
-
-#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-#header { padding: 12px 24px; border-bottom: 1px solid #1e1e3a; display: flex; align-items: center; justify-content: space-between; }
-.header-left h1 { font-size: 20px; font-weight: 700; background: linear-gradient(90deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.header-left p { font-size: 12px; color: #6a7090; margin-top: 2px; }
-
-.header-right { display: flex; gap: 8px; align-items: center; }
-.login-btn { background: linear-gradient(90deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 500; cursor: pointer; }
-.login-btn:hover { opacity: 0.9; }
-.logged-in-badge { background: #667eea22; border: 1px solid #667eea44; border-radius: 8px; padding: 5px 12px; font-size: 12px; color: #a0a8d0; }
-
-#suggestions { padding: 16px 24px; display: flex; flex-direction: column; gap: 8px; }
-.sug-btn { background: #1e1e3a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 16px; color: #a0a8d0; font-size: 13px; cursor: pointer; text-align: left; transition: all 0.2s; }
-.sug-btn:hover { background: #667eea22; border-color: #667eea; color: #fff; }
-.urdu-note { background: #1e1e3a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 10px 16px; color: #6a7090; font-size: 12px; text-align: center; }
-
-#chat-area { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 16px; }
-
-.msg-row { display: flex; align-items: flex-start; gap: 10px; }
-.msg-row.user { flex-direction: row-reverse; }
-
-.avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.avatar.user { background: #667eea33; }
-.avatar.assistant { background: #764ba233; }
-
-.bubble { max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
-.bubble.user { background: #667eea22; border: 1px solid #667eea44; border-radius: 16px 4px 16px 16px; color: #c0c8f0; }
-.bubble.assistant { background: #1e1e3a; border: 1px solid #2a2a4a; border-radius: 4px 16px 16px 16px; color: #e0e0e0; }
-
-.links-section { margin-top: 10px; padding: 10px 12px; background: #16162a; border-radius: 8px; border: 1px solid #2a2a4a; }
-.links-section p { font-size: 12px; color: #6a7090; margin-bottom: 6px; }
-.links-section a { display: block; color: #667eea; font-size: 12px; text-decoration: none; padding: 3px 0; }
-.links-section a:hover { text-decoration: underline; }
-.searched-info { font-size: 11px; color: #4a4a6a; margin-top: 6px; }
-
-.typing { display: flex; gap: 4px; align-items: center; padding: 12px 16px; }
-.typing span { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: bounce 1.2s infinite; }
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
-
-#input-area { padding: 12px 24px 16px; border-top: 1px solid #1e1e3a; }
-#input-row { display: flex; gap: 10px; align-items: center; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 8px 12px; transition: border-color 0.2s; }
-#input-row:focus-within { border-color: #667eea; }
-#user-input { flex: 1; background: none; border: none; outline: none; color: #e0e0e0; font-size: 14px; resize: none; height: 24px; }
-#user-input::placeholder { color: #4a4a6a; }
-#send-btn { background: linear-gradient(90deg, #667eea, #764ba2); border: none; border-radius: 8px; width: 32px; height: 32px; cursor: pointer; color: white; font-size: 14px; }
-
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 4px; }
+/* Page views */
+.page{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:24px;}
+.page.active{display:flex;}
+.page-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--text3);margin-bottom:20px;}
+.pcard-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.info-card h3{font-size:14px;font-weight:500;margin-bottom:6px;}
+.info-card p{font-size:12px;color:var(--text3);line-height:1.6;}
 </style>
 </head>
 <body>
 
-<!-- Auth Modal -->
-<div id="auth-modal">
-    <div class="auth-box">
-        <button class="auth-close" onclick="closeAuth()">✕</button>
-        <div class="auth-logo">
-            <h1>🛍️ Pak-Commerce AI</h1>
-            <p>Login to save your chat history</p>
-        </div>
-        <div class="auth-tabs">
-            <button class="auth-tab active" id="tab-login" onclick="showTab('login')">Login</button>
-            <button class="auth-tab" id="tab-register" onclick="showTab('register')">Register</button>
-        </div>
-        <div id="login-form">
-            <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
-            <button class="auth-btn" onclick="doLogin()">Login →</button>
-            <div class="error-msg" id="login-error"></div>
-        </div>
-        <div id="register-form" style="display:none">
-            <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Enter your Name"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="reg-password" placeholder="••••••"
-                    onfocus="showPasswordHints()"
-                    onblur="hidePasswordHints()"
-                    oninput="checkPassword(this.value)">
-                <div class="password-hints" id="password-hints">
-                    <div class="hint-item" id="hint-length">❌ At least 6 characters</div>
-                    <div class="hint-item" id="hint-upper">❌ At least 1 capital letter (A-Z)</div>
-                    <div class="hint-item" id="hint-number">❌ At least 1 number (0-9)</div>
-                </div>
-            </div>
-            <button class="auth-btn" onclick="doRegister()">Create Account →</button>
-            <div class="error-msg" id="reg-error"></div>
-        </div>
+<!-- AUTH -->
+<div id="aoverlay">
+  <div class="abox">
+    <button class="acls" onclick="closeAuth()">✕</button>
+    <div class="alogo"><h2>🛍️ PakShop AI</h2><p>Login to save history & wishlist</p></div>
+    <div class="atabs">
+      <button class="atab active" id="tl" onclick="switchTab('l')">Login</button>
+      <button class="atab" id="tr" onclick="switchTab('r')">Register</button>
     </div>
+    <div id="lform">
+      <div class="fg"><label>Email</label><input type="email" id="le" placeholder="you@example.com"></div>
+      <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="••••••••"></div>
+      <button class="sbtn2" onclick="doLogin()">Login →</button>
+      <div class="aerr" id="lerr"></div>
+    </div>
+    <div id="rform" style="display:none">
+      <div class="fg"><label>Full Name</label><input type="text" id="rn" placeholder="Your Name"></div>
+      <div class="fg"><label>Email</label><input type="email" id="re" placeholder="you@example.com"></div>
+      <div class="fg">
+        <label>Password</label>
+        <input type="password" id="rp" placeholder="Min 6 chars"
+          onfocus="document.getElementById('hbox').style.display='block'"
+          oninput="chkPass(this.value)">
+        <div class="hbox" id="hbox">
+          <div class="hi" id="hl">❌ At least 6 characters</div>
+          <div class="hi" id="hc">❌ At least 1 capital letter</div>
+          <div class="hi" id="hn">❌ At least 1 number</div>
+        </div>
+      </div>
+      <button class="sbtn2" onclick="doRegister()">Create Account →</button>
+      <div class="aerr" id="rerr"></div>
+    </div>
+  </div>
 </div>
 
-<!-- Sidebar -->
+<div id="toast"></div>
+
+<!-- SIDEBAR -->
 <div id="sidebar">
-    <div class="sidebar-header">
-        <span>🛍️</span>
-        <span class="sidebar-title">Pak-Commerce AI</span>
+  <div class="brand">
+    <div class="brand-ic">🛍️</div>
+    <div class="brand-tx"><h2>PakShop AI</h2><p>Smart Shopping</p></div>
+  </div>
+  <div class="nav-lbl">Menu</div>
+  <div class="nav-item active" onclick="showPage('chat',this)"><span class="ic">🏠</span> Home</div>
+  <div class="nav-item" onclick="showPage('categories',this)"><span class="ic">📂</span> Categories <span class="nbadge">3</span></div>
+  <div class="nav-item" onclick="showPage('saved',this)"><span class="ic">❤️</span> Saved Items <span class="nbadge" id="scnt">0</span></div>
+  <div class="nav-item" onclick="showPage('orders',this)"><span class="ic">📋</span> Orders</div>
+  <div class="nav-item" onclick="showPage('delivery',this)"><span class="ic">🚚</span> Delivery Tracker</div>
+  <div class="sdiv"></div>
+  <div class="nav-lbl">Tools</div>
+  <div class="nav-item" onclick="showPage('budget',this)"><span class="ic">💰</span> Budget Planner</div>
+  <div class="nav-item" onclick="showPage('settings',this)"><span class="ic">⚙️</span> Settings</div>
+  <div class="nav-item" onclick="showPage('help',this)"><span class="ic">❓</span> Help & Support</div>
+  <div class="sdiv"></div>
+  <div class="u-card" id="ucard" onclick="openAuth()">
+    <div class="u-card-in">
+      <div class="u-av" id="uav">?</div>
+      <div class="u-tx"><h4 id="uname">Guest User</h4><p id="uemail">Click to login</p></div>
     </div>
-    <div id="user-section" style="display:none">
-        <div class="user-info">
-            <div class="user-name" id="user-name-display"></div>
-            <div class="user-email" id="user-email-display"></div>
-        </div>
-        <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
-    </div>
-    <button class="new-chat-btn" onclick="newChat()">➕ New Chat</button>
-    <div class="history-label">💬 History</div>
-    <div id="chat-history"></div>
-    <div class="sidebar-footer">Powered by LangGraph + Groq</div>
+  </div>
 </div>
 
-<button id="toggle-btn" onclick="toggleSidebar()">◀</button>
-
-<!-- Main -->
+<!-- MAIN -->
 <div id="main">
-    <div id="header">
-        <div class="header-left">
-            <h1>🛍️ Pakistan's Online Shopping Assistant</h1>
-            <p>Real-time prices from Daraz • Telemart • Homeshopping</p>
-        </div>
-        <div class="header-right" id="header-right">
-            <button class="login-btn" onclick="openAuth('login')">Login / Register</button>
-        </div>
+  <div id="hdr">
+    <div class="hl">
+      <button class="tog" onclick="toggleSidebar()">☰</button>
+      <div class="ht">
+        <h1>🛍️ Pakistan's Shopping Assistant</h1>
+        <p>Live prices · Daraz · Telemart · Homeshopping</p>
+      </div>
     </div>
-
-    <div id="suggestions">
-        <button class="sug-btn" onclick="sendSuggestion(this.innerText)">Compare iPhone prices across all platforms</button>
-        <button class="sug-btn" onclick="sendSuggestion(this.innerText)">Find best laptop under Rs. 50,000</button>
-        <button class="sug-btn" onclick="sendSuggestion(this.innerText)">Which platform has the cheapest Samsung Galaxy?</button>
-        <div class="urdu-note">💬 Aap apni national language mein bhi sawal kar saktay hain</div>
+    <div class="hr">
+      <div class="cpill">🇵🇰 Pakistan ▾</div>
+      <button class="thbtn" id="thbtn" onclick="toggleTheme()">🌙</button>
+      <div id="authhdr"><button class="lbtn" onclick="openAuth()">Login / Register</button></div>
     </div>
+  </div>
 
+  <!-- CHAT PAGE -->
+  <div id="page-chat" style="display:flex;flex:1;flex-direction:column;overflow:hidden;">
+    <div id="welcome" style="padding:16px 24px 0;flex-shrink:0;">
+      <h2 id="welch" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;">👋 Hello, Guest!</h2>
+      <p style="font-size:12px;color:var(--text3);margin-top:3px;">What are you looking to buy today?</p>
+    </div>
+    <div id="chips" style="padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">
+      <div class="chip" onclick="useChip(this)">Best camera phone under 30k</div>
+      <div class="chip" onclick="useChip(this)">Best laptop for students</div>
+      <div class="chip" onclick="useChip(this)">Wireless earbuds under 5k</div>
+      <div class="chip" onclick="useChip(this)">Samsung phone price compare</div>
+      <div class="chip" onclick="useChip(this)">iPhone 13 price on Daraz</div>
+    </div>
     <div id="chat-area"></div>
-
-    <div id="input-area">
-        <div id="input-row">
-            <textarea id="user-input" placeholder="What are you looking for today?" rows="1"
-                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
-            <button id="send-btn" onclick="sendMessage()">↑</button>
-        </div>
+    <div id="iarea">
+      <div id="iwrap">
+        <textarea id="uinput"
+          placeholder="Ask me anything… (English ya Urdu mein) 🇵🇰"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"
+          oninput="autoRes(this)"></textarea>
+        <button class="ibtn" id="vbtn" onclick="toggleVoice()" title="Voice input 🎤">🎤</button>
+        <button class="ibtn" id="sbtn" onclick="sendMsg()">➤</button>
+      </div>
     </div>
+  </div>
+
+  <!-- CATEGORIES PAGE -->
+  <div id="page-categories" class="page">
+    <div class="page-title">📂 Categories</div>
+    <div class="page-sub">Browse products by category on Daraz, Telemart & Homeshopping</div>
+    <div class="pcard-grid">
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartphone under 50k')">
+        <h3>📱 Mobiles & Tablets</h3>
+        <p>Smartphones, tablets, accessories from top brands</p>
+      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best laptop for students under 80k')">
+        <h3>💻 Laptops & Computers</h3>
+        <p>Laptops, PCs, gaming rigs, peripherals</p>
+      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best wireless earbuds under 5000')">
+        <h3>🎧 Audio & Earphones</h3>
+        <p>Earbuds, headphones, speakers, soundbars</p>
+      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best home appliances deals')">
+        <h3>🏠 Home Appliances</h3>
+        <p>AC, fridge, washing machine, kitchen items</p>
+      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best gaming accessories in Pakistan')">
+        <h3>🎮 Gaming</h3>
+        <p>Consoles, controllers, gaming chairs, headsets</p>
+      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartwatch under 15000')">
+        <h3>⌚ Wearables</h3>
+        <p>Smartwatches, fitness bands, smart glasses</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVED PAGE -->
+  <div id="page-saved" class="page">
+    <div class="page-title">❤️ Saved Items</div>
+    <div class="page-sub">Your wishlist — products you saved</div>
+    <div id="saved-list"></div>
+  </div>
+
+  <!-- ORDERS PAGE -->
+  <div id="page-orders" class="page">
+    <div class="page-title">📋 Orders</div>
+    <div class="page-sub">Track your recent orders from all platforms</div>
+    <div class="info-card">
+      <h3>No orders yet</h3>
+      <p>Your order history will appear here after you purchase products through PakShop AI links.</p>
+    </div>
+  </div>
+
+  <!-- DELIVERY PAGE -->
+  <div id="page-delivery" class="page">
+    <div class="page-title">🚚 Delivery Tracker</div>
+    <div class="page-sub">Estimated delivery times for Pakistan platforms</div>
+    <div class="pcard-grid">
+      <div class="info-card"><h3>🟠 Daraz</h3><p>2–3 working days · PKR 199 shipping · COD available · 7-day return</p></div>
+      <div class="info-card"><h3>🟣 Telemart</h3><p>3–5 working days · PKR 150 shipping · COD available · 3-day return</p></div>
+      <div class="info-card"><h3>🔵 Homeshopping</h3><p>2–4 working days · Free shipping on 2000+ · COD available · 5-day return</p></div>
+    </div>
+  </div>
+
+  <!-- BUDGET PAGE -->
+  <div id="page-budget" class="page">
+    <div class="page-title">💰 Budget Planner</div>
+    <div class="page-sub">Set your budget and find best products in that range</div>
+    <div class="info-card" style="max-width:420px;">
+      <h3 style="margin-bottom:14px;">Select Budget Range</h3>
+      <div id="bdgt-disp" style="font-size:16px;font-weight:600;color:var(--accent2);margin-bottom:12px;">PKR 10,000 – 50,000</div>
+      <input type="range" id="bslider" style="width:100%;accent-color:var(--accent);" min="5000" max="200000" value="50000" step="1000" oninput="updBudget(this.value)">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px;"><span>5K</span><span>2 Lakh</span></div>
+      <button class="sbtn2" style="margin-top:16px;" onclick="goChat('Best products within my budget PKR '+document.getElementById('bslider').value)">Find Products in this Budget →</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div id="page-settings" class="page">
+    <div class="page-title">⚙️ Settings</div>
+    <div class="page-sub">Customize your PakShop AI experience</div>
+    <div class="info-card" style="max-width:420px;">
+      <h3 style="margin-bottom:12px;">Theme</h3>
+      <button class="sbtn2" onclick="toggleTheme()">Toggle Dark / Light Mode</button>
+    </div>
+    <div class="info-card" style="max-width:420px;margin-top:12px;">
+      <h3 style="margin-bottom:8px;">Language</h3>
+      <p style="color:var(--text3);font-size:12px;">PakShop AI supports English and Urdu. Just type in any language!</p>
+    </div>
+    <div class="info-card" style="max-width:420px;margin-top:12px;">
+      <h3 style="margin-bottom:8px;">Account</h3>
+      <p style="color:var(--text3);font-size:12px;margin-bottom:10px;">Manage your login and saved data</p>
+      <button class="sbtn2" onclick="openAuth()">Login / Register</button>
+    </div>
+  </div>
+
+  <!-- HELP PAGE -->
+  <div id="page-help" class="page">
+    <div class="page-title">❓ Help & Support</div>
+    <div class="page-sub">Get help using PakShop AI</div>
+    <div class="pcard-grid">
+      <div class="info-card"><h3>💬 How to search?</h3><p>Just type your query in the chat — like "Best phone under 30k" or any product name.</p></div>
+      <div class="info-card"><h3>🎤 Voice Search</h3><p>Click the mic button and speak in English or Urdu. We support both!</p></div>
+      <div class="info-card"><h3>❤️ Saving Items</h3><p>Click the heart icon on any product card to save it to your wishlist.</p></div>
+      <div class="info-card"><h3>🔗 Buy Links</h3><p>Click "View on Daraz/Telemart" to go directly to that product's page.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PRODUCT PANEL -->
+<div id="ppanel">
+  <div class="phdr">
+    <h3>✨ Top Picks For You</h3>
+    <span id="psub">Ask AI to see results</span>
+  </div>
+  <div id="pcontent">
+    <div class="pempty">
+      <div class="ei">🛒</div>
+      <p>Ask the AI about any product — results, prices & direct buy links will appear here!</p>
+    </div>
+  </div>
 </div>
 
 <script>
-const API = 'http://localhost:8000';
-let token = localStorage.getItem('token');
-let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-let currentSessionId = null;
-let chatMessages = [];
-let sidebarOpen = true;
-let isFirstMessage = true;
-let localHistory = JSON.parse(localStorage.getItem('localHistory') || '[]');
+// ── CONFIG ──
+const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1')
+  ? 'http://localhost:8000' : location.origin;
 
-window.onload = () => {
-    if (token && currentUser) {
-        showLoggedIn();
-        loadServerSessions();
-    } else {
-        showLocalHistory();
-    }
+// ONLY Daraz, Telemart, Homeshopping
+const PLATFORMS = ['Daraz','Telemart','Homeshopping'];
+const PC = {Daraz:'#F77F00',Telemart:'#7C3AED',Homeshopping:'#059669'};
+
+// Product images by category (royalty-free placeholder URLs using picsum / direct product images)
+const PROD_IMGS = {
+  phone: [
+    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80',
+    'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=200&q=80',
+    'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80'
+  ],
+  laptop: [
+    'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80',
+    'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=200&q=80',
+    'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80'
+  ],
+  earbuds: [
+    'https://images.unsplash.com/photo-1590658165737-15a047b7c085?w=200&q=80',
+    'https://images.unsplash.com/photo-1605464315542-bda3e2f4e605?w=200&q=80',
+    'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=200&q=80'
+  ],
+  watch: [
+    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=200&q=80',
+    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80',
+    'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=200&q=80'
+  ],
+  general: [
+    'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=200&q=80',
+    'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&q=80',
+    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80'
+  ]
 };
 
-function showPasswordHints() {
-    document.getElementById('password-hints').style.display = 'block';
+let token = localStorage.getItem('pak_tok');
+let currentUser = JSON.parse(localStorage.getItem('pak_usr')||'null');
+let sessionId = null;
+// FIX: full conversation history maintained for context
+let chatHistory = [];
+let greetedThisSession = false;
+let saved = JSON.parse(localStorage.getItem('pak_saved')||'[]');
+let recog = null, isRec = false, sideOpen = true, isDark = true;
+let currentPage = 'chat';
+
+window.onload = () => {
+  if(token && currentUser) showLoggedIn();
+  updateSaved();
+  initVoice();
+};
+
+// ── PAGE NAVIGATION ──
+function showPage(page, navEl) {
+  currentPage = page;
+  // Hide all pages
+  document.getElementById('page-chat').style.display = 'none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // Show right page
+  if(page === 'chat') {
+    document.getElementById('page-chat').style.display = 'flex';
+    // Also show product panel
+    document.getElementById('ppanel').style.display = 'flex';
+  } else {
+    document.getElementById('page-'+page).classList.add('active');
+    // Hide product panel for non-chat pages
+    document.getElementById('ppanel').classList.add('closed');
+    if(page === 'saved') renderSavedPage();
+  }
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+
+  // Show panel again when going back to chat
+  if(page === 'chat') document.getElementById('ppanel').classList.remove('closed');
 }
 
-function hidePasswordHints() {
-    setTimeout(() => {
-        document.getElementById('password-hints').style.display = 'none';
-    }, 200);
+function goChat(query) {
+  showPage('chat', document.querySelector('.nav-item'));
+  document.querySelectorAll('.nav-item')[0].classList.add('active');
+  setTimeout(()=>{
+    document.getElementById('uinput').value = query;
+    sendMsg();
+  }, 100);
 }
 
-function checkPassword(val) {
-    const lengthOk = val.length >= 6;
-    const upperOk = /[A-Z]/.test(val);
-    const numberOk = /[0-9]/.test(val);
-
-    const hintLength = document.getElementById('hint-length');
-    const hintUpper = document.getElementById('hint-upper');
-    const hintNumber = document.getElementById('hint-number');
-
-    hintLength.textContent = (lengthOk ? '✅' : '❌') + ' At least 6 characters';
-    hintLength.className = 'hint-item' + (lengthOk ? ' valid' : '');
-
-    hintUpper.textContent = (upperOk ? '✅' : '❌') + ' At least 1 capital letter (A-Z)';
-    hintUpper.className = 'hint-item' + (upperOk ? ' valid' : '');
-
-    hintNumber.textContent = (numberOk ? '✅' : '❌') + ' At least 1 number (0-9)';
-    hintNumber.className = 'hint-item' + (numberOk ? ' valid' : '');
+function renderSavedPage() {
+  const el = document.getElementById('saved-list');
+  if(!saved.length) { el.innerHTML='<div class="info-card"><h3>No saved items</h3><p>Heart any product to save it here!</p></div>'; return; }
+  el.innerHTML = saved.map((name,i)=>`
+    <div class="info-card" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+      <div><h3 style="font-size:13px;">${name}</h3><p>Saved item</p></div>
+      <button onclick="removeSaved(${i})" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;">Remove</button>
+    </div>`).join('');
 }
 
-function openAuth(tab) {
-    document.getElementById('auth-modal').classList.add('show');
-    showTab(tab);
+function removeSaved(i) {
+  saved.splice(i,1);
+  localStorage.setItem('pak_saved',JSON.stringify(saved));
+  updateSaved(); renderSavedPage();
 }
 
-function closeAuth() {
-    document.getElementById('auth-modal').classList.remove('show');
+// ── AUTH ──
+function openAuth() { document.getElementById('aoverlay').classList.add('show'); switchTab('l'); }
+function closeAuth() { document.getElementById('aoverlay').classList.remove('show'); }
+function switchTab(t) {
+  ['l','r'].forEach(x=>{
+    document.getElementById('t'+x).classList.toggle('active',x===t);
+    document.getElementById(x+'form').style.display=x===t?'block':'none';
+  });
 }
-
-function showTab(tab) {
-    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-    document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-    document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+function chkPass(v) {
+  const s=(id,ok,tx)=>{const e=document.getElementById(id);e.textContent=(ok?'✅':'❌')+' '+tx;e.className='hi'+(ok?' ok':'');};
+  s('hl',v.length>=6,'At least 6 characters');
+  s('hc',/[A-Z]/.test(v),'At least 1 capital letter');
+  s('hn',/[0-9]/.test(v),'At least 1 number');
 }
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
 
 async function doLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    if (!email || !password) return showError('login-error', 'Please fill all fields');
-    try {
-        const res = await fetch(API + '/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) return showError('login-error', data.detail);
-        token = data.token;
-        currentUser = { name: data.name, email: data.email };
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(currentUser));
-        closeAuth();
-        showLoggedIn();
-        loadServerSessions();
-    } catch(e) { showError('login-error', 'Server error!'); }
+  const email=document.getElementById('le').value.trim();
+  const pass=document.getElementById('lp').value;
+  if(!email||!pass) return showErr('lerr','Please fill all fields');
+  try {
+    const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const d=await r.json();
+    if(!r.ok) return showErr('lerr',d.detail||'Login failed');
+    token=d.token; currentUser={name:d.name,email:d.email};
+    localStorage.setItem('pak_tok',token);
+    localStorage.setItem('pak_usr',JSON.stringify(currentUser));
+    closeAuth(); showLoggedIn(); toast('Welcome back, '+d.name+'! 👋');
+  } catch(e){showErr('lerr','Server error — backend running?');}
 }
 
 async function doRegister() {
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    if (!name || !email || !password) return showError('reg-error', 'Please fill all fields');
-
-    // Validate password
-    if (password.length < 6) return showError('reg-error', 'Password must be at least 6 characters');
-    if (!/[A-Z]/.test(password)) return showError('reg-error', 'Password must contain at least 1 capital letter');
-    if (!/[0-9]/.test(password)) return showError('reg-error', 'Password must contain at least 1 number');
-
-    try {
-        const res = await fetch(API + '/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) return showError('reg-error', data.detail);
-        token = data.token;
-        currentUser = { name: data.name, email: data.email };
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(currentUser));
-        closeAuth();
-        showLoggedIn();
-        loadServerSessions();
-    } catch(e) { showError('reg-error', 'Server error!'); }
+  const name=document.getElementById('rn').value.trim();
+  const email=document.getElementById('re').value.trim();
+  const pass=document.getElementById('rp').value;
+  if(!name||!email||!pass) return showErr('rerr','Please fill all fields');
+  if(pass.length<6) return showErr('rerr','Password min 6 chars');
+  if(!/[A-Z]/.test(pass)) return showErr('rerr','Add 1 capital letter');
+  if(!/[0-9]/.test(pass)) return showErr('rerr','Add 1 number');
+  try {
+    const r=await fetch(API+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pass})});
+    const d=await r.json();
+    if(!r.ok) return showErr('rerr',d.detail||'Register failed');
+    token=d.token; currentUser={name:d.name,email:d.email};
+    localStorage.setItem('pak_tok',token);
+    localStorage.setItem('pak_usr',JSON.stringify(currentUser));
+    closeAuth(); showLoggedIn(); toast('Account created! Welcome '+d.name+' 🎉');
+  } catch(e){showErr('rerr','Server error — backend running?');}
 }
 
 function showLoggedIn() {
-    document.getElementById('user-section').style.display = 'block';
-    document.getElementById('user-name-display').textContent = currentUser.name;
-    document.getElementById('user-email-display').textContent = currentUser.email;
-    document.getElementById('header-right').innerHTML = `<span class="logged-in-badge">👤 ${currentUser.name}</span>`;
+  const ini=currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('uav').textContent=ini;
+  document.getElementById('uname').textContent=currentUser.name;
+  document.getElementById('uemail').textContent=currentUser.email;
+  document.getElementById('welch').textContent='👋 Hello, '+currentUser.name.split(' ')[0]+'!';
+  document.getElementById('authhdr').innerHTML=`
+    <span style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);">👤 ${currentUser.name}</span>
+    <button onclick="doLogout()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;margin-left:6px;">Logout</button>`;
+  document.getElementById('ucard').onclick = null;
 }
 
 function doLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    token = null; currentUser = null;
-    document.getElementById('user-section').style.display = 'none';
-    document.getElementById('header-right').innerHTML = `<button class="login-btn" onclick="openAuth('login')">Login / Register</button>`;
-    newChat();
-    showLocalHistory();
+  localStorage.removeItem('pak_tok'); localStorage.removeItem('pak_usr');
+  token=null; currentUser=null; sessionId=null;
+  chatHistory=[]; greetedThisSession=false;
+  document.getElementById('uav').textContent='?';
+  document.getElementById('uname').textContent='Guest User';
+  document.getElementById('uemail').textContent='Click to login';
+  document.getElementById('welch').textContent='👋 Hello, Guest!';
+  document.getElementById('authhdr').innerHTML=`<button class="lbtn" onclick="openAuth()">Login / Register</button>`;
+  document.getElementById('ucard').onclick=openAuth;
+  toast('Logged out successfully');
 }
 
-function showError(id, msg) {
-    const el = document.getElementById(id);
-    el.textContent = msg; el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 4000);
+// ── CHAT ──
+function useChip(el) {
+  document.getElementById('chips').style.display='none';
+  document.getElementById('uinput').value=el.textContent;
+  sendMsg();
 }
 
-async function loadServerSessions() {
+// FIX: proper auto resize — no premature wrapping
+function autoRes(el) {
+  el.style.height = '24px';
+  el.style.overflowY = 'hidden';
+  if (el.scrollHeight > 24) {
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    if (el.scrollHeight > 120) el.style.overflowY = 'auto';
+  }
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('uinput');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value=''; inp.style.height='22px';
+  document.getElementById('chips').style.display='none';
+
+  // Create session if logged in and no session yet
+  if(!sessionId && token) {
     try {
-        const res = await fetch(API + '/sessions', { headers: { 'Authorization': 'Bearer ' + token } });
-        const data = await res.json();
-        renderHistory(data.sessions, true);
-    } catch(e) {}
-}
+      const r=await fetch(API+'/sessions/create',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({message:msg})
+      });
+      const d=await r.json();
+      sessionId=d.session_id;
+    } catch(e){}
+  }
 
-function showLocalHistory() {
-    renderHistory(localHistory.map((h, i) => ({ id: 'local_' + i, name: h.name })), false);
-}
+  addBubble('u', msg);
 
-function renderHistory(sessions, isServer) {
-    const hist = document.getElementById('chat-history');
-    hist.innerHTML = '';
-    sessions.forEach(s => {
-        const div = document.createElement('div');
-        div.className = 'history-item' + (s.id === currentSessionId ? ' active' : '');
-        div.innerHTML = `<span onclick="${isServer ? 'loadSession(' + s.id + ')' : 'loadLocalSession(' + s.id.replace('local_','') + ')'}" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🗨 ${s.name}</span>
-                         <button class="del-btn" onclick="${isServer ? 'removeSession(' + s.id + ')' : 'removeLocalSession(' + s.id.replace('local_','') + ')'}">🗑</button>`;
-        hist.appendChild(div);
-    });
-}
+  // FIX: add to history before sending so backend gets full context
+  chatHistory.push({role:'user', content:msg});
 
-async function loadSession(id) {
-    currentSessionId = id; isFirstMessage = false;
-    try {
-        const res = await fetch(API + '/sessions/' + id + '/messages', { headers: { 'Authorization': 'Bearer ' + token } });
-        const data = await res.json();
-        chatMessages = data.messages;
-        document.getElementById('suggestions').style.display = 'none';
-        const chatArea = document.getElementById('chat-area');
-        chatArea.innerHTML = '';
-        data.messages.forEach(m => appendMessage(m.role, m.content, m.platform_links, null, false));
-        chatArea.scrollTop = chatArea.scrollHeight;
-        loadServerSessions();
-    } catch(e) {}
-}
+  const tid='t'+Date.now();
+  addTyping(tid);
 
-function loadLocalSession(index) {
-    const session = localHistory[index];
-    if (!session) return;
-    currentSessionId = 'local_' + index; isFirstMessage = false;
-    chatMessages = session.messages;
-    document.getElementById('suggestions').style.display = 'none';
-    const chatArea = document.getElementById('chat-area');
-    chatArea.innerHTML = '';
-    session.messages.forEach(m => appendMessage(m.role, m.content, m.platform_links, null, false));
-    chatArea.scrollTop = chatArea.scrollHeight;
-}
+  try {
+    const hdrs={'Content-Type':'application/json'};
+    if(token) hdrs['Authorization']='Bearer '+token;
 
-async function removeSession(id) {
-    try {
-        await fetch(API + '/sessions/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
-        if (currentSessionId === id) newChat();
-        else loadServerSessions();
-    } catch(e) {}
-}
+    // FIX: send FULL chat history so agent remembers conversation
+    const body = {
+      message: msg,
+      session_id: token ? sessionId : null,
+      chat_history: chatHistory.slice(-20),  // last 20 msgs for full context
+      user_id: currentUser ? currentUser.email : null  // helps backend identify same user
+    };
 
-function removeLocalSession(index) {
-    localHistory.splice(index, 1);
-    localStorage.setItem('localHistory', JSON.stringify(localHistory));
-    showLocalHistory();
-}
+    const r = await fetch(API+'/chat',{method:'POST',headers:hdrs,body:JSON.stringify(body)});
+    const d = await r.json();
+    rmEl(tid);
 
-function newChat() {
-    currentSessionId = null; isFirstMessage = true; chatMessages = [];
-    document.getElementById('chat-area').innerHTML = '';
-    document.getElementById('suggestions').style.display = 'flex';
-    if (token) loadServerSessions(); else showLocalHistory();
-}
+    let resp = (d.response||'').trim();
 
-function toggleSidebar() {
-    sidebarOpen = !sidebarOpen;
-    document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
-    document.getElementById('toggle-btn').classList.toggle('collapsed', !sidebarOpen);
-    document.getElementById('toggle-btn').innerHTML = sidebarOpen ? '◀' : '▶';
-    document.getElementById('toggle-btn').style.left = sidebarOpen ? '240px' : '0';
-}
-
-function sendSuggestion(text) {
-    document.getElementById('user-input').value = text;
-    sendMessage();
-}
-
-async function sendMessage() {
-    const input = document.getElementById('user-input');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-
-    document.getElementById('suggestions').style.display = 'none';
-
-    if (!currentSessionId) {
-        if (token) {
-            try {
-                const res = await fetch(API + '/sessions/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                    body: JSON.stringify({ message: msg })
-                });
-                const data = await res.json();
-                currentSessionId = data.session_id;
-                loadServerSessions();
-            } catch(e) {}
-        } else {
-            const name = msg.split(' ').slice(0, 3).join(' ') + '...';
-            localHistory.unshift({ name, messages: [] });
-            currentSessionId = 'local_0';
-            localStorage.setItem('localHistory', JSON.stringify(localHistory));
-            showLocalHistory();
-        }
+    // FIX: Only greet ONCE per session — never again
+    if(!greetedThisSession) {
+      greetedThisSession = true;
+      if(!resp.toLowerCase().includes('assalam') && !resp.toLowerCase().includes('hello') && !resp.toLowerCase().includes('hi')) {
+        resp = 'Assalam-o-Alaikum! 👋\n\n' + resp;
+      }
+    } else {
+      // Remove any salam from subsequent responses
+      resp = resp.replace(/assalam[\s-]*o[\s-]*alaikum[!,.]?\s*/gi,'').trim();
+      resp = resp.replace(/^(hello|hi|salam)[!,.]?\s*/gi,'').trim();
     }
 
-    appendMessage('user', msg);
-    chatMessages.push({ role: 'user', content: msg });
+    addBubble('b', resp);
+    chatHistory.push({role:'assistant', content:resp});
 
-    const typingId = 'typing-' + Date.now();
-    const chatArea = document.getElementById('chat-area');
-    const typingDiv = document.createElement('div');
-    typingDiv.id = typingId;
-    typingDiv.className = 'msg-row';
-    typingDiv.innerHTML = `<div class="avatar assistant">🛍️</div>
-        <div class="bubble assistant">
-            <div class="typing"><span></span><span></span><span></span></div>
-            <div style="font-size:11px;color:#4a4a6a;margin-top:4px;">Retrieving from all available platforms...</div>
-        </div>`;
-    chatArea.appendChild(typingDiv);
-    chatArea.scrollTop = chatArea.scrollHeight;
+    // Render products if platform_links available
+    renderPanel(d, msg);
 
-    try {
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-
-        const res = await fetch(API + '/chat', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-                message: msg,
-                session_id: token ? currentSessionId : null,
-                chat_history: chatMessages.slice(-6)
-            })
-        });
-        const data = await res.json();
-        document.getElementById(typingId)?.remove();
-
-        let response = data.response || '';
-        if (isFirstMessage) {
-            if (!response.toLowerCase().includes('assalam')) {
-                response = 'Assalam-o-Alaikum! 👋\n\n' + response;
-            }
-            isFirstMessage = false;
-        }
-        response += '\n\n---\nThanks for choosing Pak-Commerce AI! Wish you a happy shopping ✨ — come back anytime! 💫';
-
-        appendMessage('assistant', response, data.platform_links, data.platforms_searched);
-        chatMessages.push({ role: 'assistant', content: response, platform_links: data.platform_links });
-
-        if (!token && currentSessionId && currentSessionId.startsWith('local_')) {
-            const idx = parseInt(currentSessionId.replace('local_', ''));
-            if (localHistory[idx]) {
-                localHistory[idx].messages = chatMessages;
-                localStorage.setItem('localHistory', JSON.stringify(localHistory));
-            }
-        }
-
-    } catch(e) {
-        document.getElementById(typingId)?.remove();
-        appendMessage('assistant', 'Sorry, server se connection nahi hua. Please try again!');
-    }
+  } catch(e) {
+    rmEl(tid);
+    addBubble('b','⚠️ Server connect nahi ho saka. Backend check karo ya localhost:8000 pe run karo!');
+  }
 }
 
-function appendMessage(role, content, platform_links, platforms_searched, scroll=true) {
-    const chatArea = document.getElementById('chat-area');
-    const row = document.createElement('div');
-    row.className = 'msg-row ' + role;
-    const avatar = role === 'user' ? '👤' : '🛍️';
-    const formatted = content ? content.replace(/\n/g, '<br>') : '';
-    let linksHtml = '';
-    if (platform_links && Object.keys(platform_links).length > 0) {
-        linksHtml = `<div class="links-section"><p>🔗 Direct Links</p>
-            ${Object.entries(platform_links).map(([p,l]) => `<a href="${l}" target="_blank">${p}</a>`).join('')}
-        </div>`;
-    }
-    let searchedHtml = '';
-    if (platforms_searched && platforms_searched.length > 0) {
-        searchedHtml = `<div class="searched-info">🔍 Searched: ${platforms_searched.join(', ')}</div>`;
-    }
-    row.innerHTML = `<div class="avatar ${role}">${avatar}</div>
-        <div class="bubble ${role}">${formatted}${linksHtml}${searchedHtml}</div>`;
-    chatArea.appendChild(row);
-    if (scroll) chatArea.scrollTop = chatArea.scrollHeight;
+function addBubble(role, text) {
+  const area=document.getElementById('chat-area');
+  const time=new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'});
+  const row=document.createElement('div');
+  row.className='mrow '+(role==='u'?'u':'');
+  // FIX: properly format text — replace \n with <br>, keep whitespace
+  const fmt = text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  row.innerHTML=`<div class="av ${role}">${role==='u'?'👤':'🤖'}</div>
+    <div>
+      <div class="bub ${role}">${fmt}</div>
+      <div class="mtime">${role==='u'?'You':'ShopWise AI'} · ${time}</div>
+    </div>`;
+  area.appendChild(row);
+  area.scrollTop=area.scrollHeight;
+}
+
+function addTyping(id) {
+  const area=document.getElementById('chat-area');
+  const row=document.createElement('div');
+  row.className='mrow'; row.id=id;
+  row.innerHTML=`<div class="av b">🤖</div>
+    <div class="bub b" style="padding:0;max-width:200px">
+      <div class="typbub"><span></span><span></span><span></span><span class="typlbl">Thinking…</span></div>
+    </div>`;
+  area.appendChild(row);
+  area.scrollTop=area.scrollHeight;
+}
+function rmEl(id){document.getElementById(id)?.remove();}
+
+// ── PRODUCT PANEL ──
+function getCategory(q) {
+  const l=q.toLowerCase();
+  if(/iphone|samsung|oppo|vivo|realme|tecno|infinix|phone|mobile|smartphone/.test(l)) return 'phone';
+  if(/laptop|notebook|macbook|pc|computer/.test(l)) return 'laptop';
+  if(/earbuds|earphone|headphone|speaker|audio|jbl|anker|airpod/.test(l)) return 'earbuds';
+  if(/watch|smartwatch|band|fitness/.test(l)) return 'watch';
+  return 'general';
+}
+
+function getProductNames(q, cat) {
+  const l=q.toLowerCase();
+  if(l.includes('iphone')) return ['iPhone 13','iPhone 12','iPhone 11'];
+  if(l.includes('samsung')) return ['Samsung Galaxy A54','Samsung Galaxy A34','Samsung Galaxy M34'];
+  if(l.includes('realme')) return ['Realme C67','Realme 12 Pro','Realme GT 6'];
+  if(l.includes('infinix')) return ['Infinix GT 10 Pro','Infinix Note 30','Infinix Hot 40'];
+  if(l.includes('tecno')) return ['Tecno Pova 5 Pro','Tecno Spark 20','Tecno Camon 20'];
+  if(cat==='phone') return ['Infinix GT 10 Pro','Poco X6 Pro','Samsung Galaxy A54'];
+  if(cat==='laptop') return ['HP Laptop 15s','Lenovo IdeaPad 3','Dell Inspiron 15'];
+  if(cat==='earbuds') return ['JBL Tune 230NC','Anker Soundcore Q30','Samsung Galaxy Buds2'];
+  if(cat==='watch') return ['Samsung Galaxy Watch 6','Huawei Band 8','Xiaomi Band 8'];
+  return ['Top Result 1','Top Result 2','Top Result 3'];
+}
+
+function mockPrice(i, cat) {
+  const bases={phone:[49999,48499,44999],laptop:[89999,75999,69999],earbuds:[8499,6999,12999],watch:[29999,5999,8999],general:[15999,12499,9999]};
+  const arr=bases[cat]||bases.general;
+  return arr[i%arr.length]+Math.floor(Math.random()*400-200);
+}
+
+function renderPanel(data, query) {
+  const panel=document.getElementById('pcontent');
+  const sub=document.getElementById('psub');
+  const links=data.platform_links||{};
+  // FIX: Only use Daraz, Telemart, Homeshopping
+  const plats=PLATFORMS.filter(p=>links[p]||true); // always show our 3 platforms
+  sub.textContent=plats.length+' platforms searched';
+  panel.innerHTML='';
+
+  const cat=getCategory(query);
+  const names=getProductNames(query, cat);
+  const imgs=PROD_IMGS[cat]||PROD_IMGS.general;
+  const badges=[['best','Best Overall'],['val','Best Value'],['bat','Best Battery']];
+
+  names.forEach((name,i)=>{
+    const price=mockPrice(i,cat);
+    const plat=PLATFORMS[i%3];
+    // FIX: use real link from backend if available, else construct platform URL
+    const link=links[plat]||getPlatformSearchUrl(plat,name);
+    const rating=(4.1+Math.random()*.5).toFixed(1);
+    const rev=Math.floor(700+Math.random()*800);
+    const stars='★'.repeat(Math.round(rating))+'☆'.repeat(5-Math.round(rating));
+    const isSaved=saved.includes(name);
+    const col=PC[plat]||'#6366F1';
+    const [bc,bt]=badges[i]||['',''];
+    const imgUrl=imgs[i%imgs.length];
+
+    const card=document.createElement('div');
+    card.className='pcard';
+    card.innerHTML=`
+      <div class="badge-row">${bc?`<span class="bdg ${bc}">${bt}</span>`:''}</div>
+      <div class="cimg">
+        <img src="${imgUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<div class=noimg>📱</div>'">
+        <button class="wbtn" onclick="toggleSave(event,'${name}',this)">${isSaved?'❤️':'🤍'}</button>
+      </div>
+      <div class="cbody">
+        <div class="cname">${name}</div>
+        <div class="cstars"><span class="st">${stars}</span><span class="cnt">${rating} (${rev})</span></div>
+        <div class="cprice">PKR ${price.toLocaleString()}</div>
+        <div class="cplat"><div class="pdot" style="background:${col}"></div><span class="plbl">${plat}</span></div>
+        <button class="vbtn" onclick="goLink('${link}','${plat}')">View on ${plat} ↗</button>
+      </div>`;
+    panel.appendChild(card);
+  });
+
+  // Price comparison — only our 3 platforms
+  const csec=document.createElement('div'); csec.className='csec';
+  const rows=PLATFORMS.map((p,i)=>{
+    const pr=mockPrice(i,cat);
+    const dy=p==='Daraz'?'2-3 Days':p==='Telemart'?'3-5 Days':'2-4 Days';
+    const rt=(4.0+Math.random()*.5).toFixed(1);
+    const col=PC[p];
+    const lnk=links[p]||getPlatformSearchUrl(p,names[0]);
+    return `<tr>
+      <td><div class="pcell"><div class="pi" style="background:${col}20;color:${col}">${p[0]}</div>
+        <a href="${lnk}" target="_blank" style="color:var(--text);text-decoration:none;font-size:12px">${p}</a></div></td>
+      <td style="font-weight:500">PKR ${pr.toLocaleString()}</td>
+      <td style="color:var(--text3);font-size:11px">${dy}</td>
+      <td><span class="sr">★ ${rt}</span></td></tr>`;
+  }).join('');
+  csec.innerHTML=`<h4>📊 Price Comparison</h4>
+    <table class="ctbl"><thead><tr><th>Platform</th><th>Price</th><th>Delivery</th><th>Rating</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+  panel.appendChild(csec);
+}
+
+function getPlatformSearchUrl(platform, query) {
+  const q=encodeURIComponent(query);
+  if(platform==='Daraz') return `https://www.daraz.pk/catalog/?q=${q}`;
+  if(platform==='Telemart') return `https://telemart.pk/search?q=${q}`;
+  if(platform==='Homeshopping') return `https://homeshopping.pk/search?s=${q}`;
+  return '#';
+}
+
+function goLink(url, plat) {
+  if(!url||url==='#'){toast('Searching on '+plat+'…');return;}
+  window.open(url,'_blank');
+}
+
+// ── WISHLIST ──
+function toggleSave(e,name,btn) {
+  e.stopPropagation();
+  const idx=saved.indexOf(name);
+  if(idx===-1){saved.push(name);btn.textContent='❤️';toast(name+' saved! ❤️');}
+  else{saved.splice(idx,1);btn.textContent='🤍';toast('Removed from saved');}
+  localStorage.setItem('pak_saved',JSON.stringify(saved));
+  updateSaved();
+}
+function updateSaved(){document.getElementById('scnt').textContent=saved.length;}
+
+// ── VOICE INPUT ──
+function initVoice() {
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+  recog=new SR();
+  recog.continuous=false; recog.interimResults=true; recog.lang='ur-PK';
+  recog.onresult=e=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
+    document.getElementById('uinput').value=t;
+    autoRes(document.getElementById('uinput'));
+  };
+  recog.onend=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');};
+  recog.onerror=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');toast('Voice error, try again');};
+}
+function toggleVoice() {
+  if(!recog){toast('Voice not supported in this browser');return;}
+  if(isRec){recog.stop();}
+  else{recog.start();toast('🎤 Listening… (Urdu/English)');document.getElementById('vbtn').classList.add('rec');}
+  isRec=!isRec;
+}
+
+// ── UI HELPERS ──
+function toggleSidebar(){
+  sideOpen=!sideOpen;
+  document.getElementById('sidebar').classList.toggle('closed',!sideOpen);
+}
+
+let isDarkMode=true;
+function toggleTheme() {
+  isDarkMode=!isDarkMode;
+  const d=isDarkMode
+    ? {bg:'#0F172A',sf:'#1E293B',sf2:'#253347',tx:'#F1F5F9',t2:'#94A3B8',t3:'#64748B',bd:'rgba(255,255,255,0.07)'}
+    : {bg:'#F8FAFC',sf:'#FFFFFF',sf2:'#F1F5F9',tx:'#0F172A',t2:'#475569',t3:'#94A3B8',bd:'rgba(0,0,0,0.08)'};
+  const r=document.documentElement.style;
+  r.setProperty('--bg',d.bg); r.setProperty('--surface',d.sf);
+  r.setProperty('--surface2',d.sf2); r.setProperty('--text',d.tx);
+  r.setProperty('--text2',d.t2); r.setProperty('--text3',d.t3);
+  r.setProperty('--border',d.bd);
+  document.getElementById('thbtn').textContent=isDarkMode?'🌙':'☀️';
+}
+
+function updBudget(v) {
+  const vi=parseInt(v), mn=Math.round(vi*.2/1000)*1000;
+  document.getElementById('bdgt-disp').textContent=`PKR ${mn.toLocaleString()} – ${vi.toLocaleString()}`;
+}
+
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 </script>
-<script src="/static/script.js"></script>
 </body>
-</html> 
+</html>

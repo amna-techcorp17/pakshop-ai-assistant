@@ -1,175 +1,162 @@
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
-from typing import List, Optional
-from dotenv import load_dotenv
-from auth import (register_user, login_user, create_token, verify_token,
-                  get_user_sessions, create_session, delete_session,
-                  save_message, get_messages, is_first_session)
-load_dotenv()
+from pydantic import BaseModel
+from typing import Optional, List, Dict
+import uvicorn
+import os
 
-app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-app.mount("/static", StaticFiles(directory="static"), name="static")
+from auth import (
+    register_user, login_user, create_token, verify_token,
+    get_user_sessions, create_session, delete_session,
+    save_message, get_messages, is_first_session
+)
+from graph import run_agent
 
-class RegisterData(BaseModel):
-    name: str
-    email: str
-    password: str = Field(min_length=6, max_length=20)
+app = FastAPI(title="PakShop AI", version="2.0")
 
-class LoginData(BaseModel):
-    email: str
-    password: str = Field(min_length=6, max_length=20)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class Message(BaseModel):
-    role: str
-    content: str
-
-class Query(BaseModel):
-    message: str
-    session_id: Optional[int] = None
-    chat_history: Optional[List[Message]] = []
+# Serve static files & index.html
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
-def read_root():
-    return FileResponse("index.html")
+def serve_index():
+    if os.path.exists("index.html"):
+        return FileResponse("index.html")
+    return {"message": "PakShop AI Backend Running"}
 
-from fastapi import HTTPException
+# ── MODELS ──
+class RegisterModel(BaseModel):
+    name: str
+    email: str
+    password: str
 
+class LoginModel(BaseModel):
+    email: str
+    password: str
+
+class ChatModel(BaseModel):
+    message: str
+    session_id: Optional[int] = None
+    # FIX: full chat_history from frontend for context
+    chat_history: Optional[List[Dict[str, str]]] = []
+    # FIX: user_id to track same user
+    user_id: Optional[str] = None
+
+class SessionCreate(BaseModel):
+    message: str
+
+# ── AUTH ENDPOINTS ──
 @app.post("/register")
-def register(data: RegisterData):
-
-    print("REGISTER HIT:", data)
-
-    result = register_user(
-        data.name,
-        data.email,
-        str(data.password)
-    )
-
-    print("REGISTER RESULT:", result)
-
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
-
+def register(data: RegisterModel):
+    result = register_user(data.name, data.email, data.password)
+    if not result["success"]:
+        raise HTTPException(status_code=400, detail=result["error"])
     token = create_token(result["user_id"], result["email"])
-
-    return {
-        "token": token,
-        "name": result["name"],
-        "email": result["email"]
-    }
+    return {"token": token, "name": result["name"], "email": result["email"]}
 
 @app.post("/login")
-def login(data: LoginData):
-
+def login(data: LoginModel):
     result = login_user(data.email, data.password)
-
-    print("LOGIN RESULT:", result)
-
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
-
+    if not result["success"]:
+        raise HTTPException(status_code=401, detail=result["error"])
     token = create_token(result["user_id"], result["email"])
+    return {"token": token, "name": result["name"], "email": result["email"]}
 
-    return {
-        "token": token,
-        "name": result["name"],
-        "email": result["email"]
-    }
+def get_current_user(authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    token = authorization.split(" ")[1]
+    result = verify_token(token)
+    if not result["valid"]:
+        return None
+    return result
 
+# ── SESSION ENDPOINTS ──
 @app.get("/sessions")
-def get_sessions(authorization: str = Header(None)):
-    if not authorization:
+def list_sessions(user=Depends(get_current_user)):
+    if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    token = authorization.replace("Bearer ", "")
-    payload = verify_token(token)
-    if not payload["valid"]:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    sessions = get_user_sessions(payload["user_id"])
+    sessions = get_user_sessions(user["user_id"])
     return {"sessions": [{"id": s[0], "name": s[1], "created_at": s[2]} for s in sessions]}
 
 @app.post("/sessions/create")
-def new_session(query: Query, authorization: str = Header(None)):
-    if not authorization:
+def new_session(data: SessionCreate, user=Depends(get_current_user)):
+    if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    token = authorization.replace("Bearer ", "")
-    payload = verify_token(token)
-    if not payload["valid"]:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    session_id = create_session(payload["user_id"], query.message)
+    session_id = create_session(user["user_id"], data.message)
     return {"session_id": session_id}
 
-@app.delete("/sessions/{session_id}")
-def remove_session(session_id: int, authorization: str = Header(None)):
-    if not authorization:
+@app.get("/sessions/{session_id}/messages")
+def session_messages(session_id: int, user=Depends(get_current_user)):
+    if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    token = authorization.replace("Bearer ", "")
-    payload = verify_token(token)
-    if not payload["valid"]:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    delete_session(session_id, payload["user_id"])
+    msgs = get_messages(session_id)
+    return {"messages": msgs}
+
+@app.delete("/sessions/{session_id}")
+def remove_session(session_id: int, user=Depends(get_current_user)):
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    delete_session(session_id, user["user_id"])
     return {"success": True}
 
-@app.get("/sessions/{session_id}/messages")
-def get_session_messages(session_id: int, authorization: str = Header(None)):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    token = authorization.replace("Bearer ", "")
-    payload = verify_token(token)
-    if not payload["valid"]:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    messages = get_messages(session_id)
-    return {"messages": messages}
-
+# ── CHAT ENDPOINT ──
 @app.post("/chat")
-async def chat(query: Query, authorization: str = Header(None)):
-    from graph import app as graph_app
+def chat(data: ChatModel, user=Depends(get_current_user)):
+    """
+    Main chat endpoint.
     
-    is_logged_in = False
-    user_id = None
+    FIX 1: Full chat_history from frontend passed to agent for full context.
+    FIX 2: is_first_message tracked via session — only True for very first message.
+    FIX 3: user_id passed so agent knows it's the same user.
+    """
     
-    if authorization:
-        token = authorization.replace("Bearer ", "")
-        payload = verify_token(token)
-        if payload["valid"]:
-            is_logged_in = True
-            user_id = payload["user_id"]
-
-    history_str = ""
-    if query.chat_history:
-        for msg in query.chat_history[-6:]:
-            role = "User" if msg.role == "user" else "Assistant"
-            history_str += role + ": " + msg.content[:300] + "\n"
-
-    first_time = is_first_session(user_id) if user_id else True
-
-    result = graph_app.invoke({
-        "query": query.message,
-        "chat_history": history_str,
-        "route": None,
-        "search_results": None,
-        "platforms_searched": None,
-        "platform_links": None,
-        "customer_needs": None,
-        "comparison_result": None,
-        "response": None,
-        "evaluation": None
-    })
-
-    response = result.get("response", "")
-    platform_links = result.get("platform_links", {})
-    platforms_searched = result.get("platforms_searched", [])
-
-    if is_logged_in and query.session_id:
-        save_message(query.session_id, "user", query.message)
-        save_message(query.session_id, "assistant", response, platform_links)
-
+    # Determine if this is the first message of the session
+    is_first = False
+    
+    if user and data.session_id:
+        # For logged-in users: check if session has any messages yet
+        existing = get_messages(data.session_id)
+        is_first = len(existing) == 0
+    else:
+        # For guests: check if chat_history has only 1 message (the current one)
+        hist = data.chat_history or []
+        user_msgs = [m for m in hist if m.get("role") == "user"]
+        is_first = len(user_msgs) <= 1
+    
+    # Run agent with full chat history
+    result = run_agent(
+        user_message=data.message,
+        chat_history=data.chat_history or [],
+        is_first_message=is_first,
+        user_id=data.user_id or (user["email"] if user else None)
+    )
+    
+    # Save messages to DB if logged in
+    if user and data.session_id:
+        save_message(data.session_id, "user", data.message)
+        save_message(
+            data.session_id,
+            "assistant",
+            result["response"],
+            result.get("platform_links")
+        )
+    
     return {
-        "response": response,
-        "platform_links": platform_links,
-        "platforms_searched": platforms_searched,
-        "is_first_time": first_time
+        "response": result["response"],
+        "platform_links": result.get("platform_links"),
+        "platforms_searched": result.get("platforms_searched", [])
     }
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)

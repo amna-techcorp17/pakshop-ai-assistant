@@ -1,10 +1,14 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-import sqlite3, json
+import sqlite3, json, os
+from dotenv import load_dotenv
 
-SECRET_KEY = "pak-commerce-secret-key-2026"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key-change-in-production")
 ALGORITHM = "HS256"
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def init_auth_db():
@@ -25,33 +29,24 @@ def init_auth_db():
     conn.close()
 
 def register_user(name, email, password):
-
     print("RAW PASSWORD:", repr(password))
-
-    # normalize input
     password = str(password).strip()
 
-    # safety checks
     if len(password) < 6:
         return {"success": False, "error": "Password too short (min 6 chars)"}
-
     if len(password) > 20:
         password = password[:20]
 
     try:
         conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
         c = conn.cursor()
-
         hashed = pwd_context.hash(password)
-
         c.execute(
             "INSERT INTO users (name, email, password, created_at) VALUES (?, ?, ?, ?)",
             (name, email, hashed, datetime.now().strftime("%Y-%m-%d %H:%M"))
         )
-
         conn.commit()
         user_id = c.lastrowid
-
         return {
             "success": True,
             "user_id": user_id,
@@ -59,18 +54,19 @@ def register_user(name, email, password):
             "email": email
         }
     except sqlite3.IntegrityError:
-     return {"success": False, "error": "Email already registered"}
+        return {"success": False, "error": "Email already registered"}
     except Exception as e:
-     return {"success": False, "error": str(e)}
+        return {"success": False, "error": str(e)}
     finally:
-     conn.close()
-    
+        conn.close()
+
 def login_user(email, password):
     conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
     c = conn.cursor()
     c.execute("SELECT id, name, email, password FROM users WHERE email=?", (email,))
     user = c.fetchone()
     conn.close()
+
     if not user or not pwd_context.verify(password, user[3]):
         return {"success": False, "error": "Invalid email or password"}
     return {"success": True, "user_id": user[0], "name": user[1], "email": user[2]}
