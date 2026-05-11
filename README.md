@@ -10,92 +10,202 @@
 
 ---
 
-## 📌 What is this?
+## 📌 Project Overview
 
-PakShop AI Assistant is an **intelligent, multi-agent customer service chatbot** for a Pakistani e-commerce store. It uses **LangGraph** to orchestrate four specialized agents that handle product queries, shipping information, return policies, and general conversation — all powered by **Groq's LLM (`llama-3.3-70b-versatile`)**.
+**PakShop AI Assistant** is a production-style, multi-agent AI shopping chatbot built for Pakistani e-commerce. It searches real platforms (Daraz, Telemart, Homeshopping), analyzes customer needs, compares products, and delivers smart recommendations — all powered by **Groq's llama-3.3-70b-versatile** LLM orchestrated through **LangGraph**.
 
-Every response is automatically evaluated by a dedicated `EvaluatorAgent` that scores quality on four dimensions: relevance, accuracy, friendliness, and completeness.
+The system features full **JWT-based user authentication**, **persistent chat history** per user via SQLite, and an **EvaluatorAgent** that automatically scores every response on relevance, accuracy, friendliness, and completeness.
 
 ---
 
-## 🧠 Agent Flow
 
-```
+
+
+```text
 User Query
     │
     ▼
 ┌─────────────┐
-│ RouterAgent │  ← Classifies query as 'rag' or 'general'
+│ RouterAgent │  ← Classifies: 'search' or 'general'
 └──────┬──────┘
        │
   ┌────┴────┐
   ▼          ▼
-┌──────────┐  ┌────────────────┐
-│ RAGAgent │  │ GeneralAgent   │
-│(products,│  │(greetings,     │
-│shipping, │  │ general chat)  │
-│returns)  │  │                │
-└────┬─────┘  └──────┬─────────┘
-     │                │
-     └───────┬─────────┘
-             ▼
-    ┌──────────────────┐
-    │  EvaluatorAgent  │  ← Scores response quality (1–10)
-    └────────┬─────────┘
-             ▼
-       Final Response → User
+SearchAgent  GeneralAgent
+  │
+  ▼
+NeedsAgent        ← Extracts customer requirements
+  │
+  ▼
+ComparisonAgent   ← Compares shortlisted products
+  │
+  ▼
+RecommendAgent    ← Picks best match with reasoning
+  │
+  └──────────────┐
+                 ▼
+        ┌──────────────────┐
+        │  EvaluatorAgent  │  ← Auto-scores response (1–10)
+        └────────┬─────────┘
+                 ▼
+           Final Response → User
 ```
 
+## 🤖 Agent Breakdown
+
+| Agent | File | Role | Design Pattern |
+|---|---|---|---|
+| RouterAgent | agents/router_agent.py | Classifies query as 'search' or 'general' | Chain of Responsibility |
+| SearchAgent | agents/search_agent.py | Searches Daraz, Telemart, Homeshopping | Strategy Pattern |
+| NeedsAgent | agents/needs_agent.py | Extracts and analyzes customer requirements | Strategy Pattern |
+| ComparisonAgent | agents/comparison_agent.py | Compares shortlisted products side by side | Strategy Pattern |
+| RecommendAgent | agents/recommend_agent.py | Picks best product and explains why | Strategy Pattern |
+| GeneralAgent | agents/general_agent.py | Handles greetings and general conversation | Strategy Pattern |
+| EvaluatorAgent | agents/evaluator_agent.py | Scores response on 4 quality metrics | Observer Pattern |
+| BaseAgent | agents/base_agent.py | Abstract base — enforces process() interface | Template Method Pattern |
+
 ---
 
-## 🤖 Agents
-
-| Agent | Role | Design Pattern |
-|-------|------|----------------|
-| `RouterAgent` | Classifies query → `rag` or `general` | Chain of Responsibility |
-| `RAGAgent` | Retrieves context from FAISS knowledge base | Strategy Pattern |
-| `GeneralAgent` | Handles greetings & general conversation | Strategy Pattern |
-| `EvaluatorAgent` | Scores response on 4 dimensions (1–10) | Observer Pattern |
-| `BaseAgent` | Abstract base class for all agents | Template Method Pattern |
-
----
-
-## 🎨 Design Patterns Implemented (5 Patterns)
+## 🎨 Design Patterns (5 Implemented)
 
 | # | Pattern | Where Used | How |
-|---|---------|-----------|-----|
-| 1 | **Template Method** | `BaseAgent` | Defines abstract `process()` method all agents must implement |
-| 2 | **Strategy** | `RAGAgent` & `GeneralAgent` | Interchangeable handlers selected by RouterAgent |
-| 3 | **Singleton** | `RAGTool` | Only one FAISS vector store instance exists across the app |
-| 4 | **Chain of Responsibility** | `RouterAgent` | Decides which agent owns the query |
-| 5 | **Observer** | `EvaluatorAgent` | Observes and evaluates every response automatically |
+|---|---|---|---|
+| 1 | Template Method | BaseAgent | Abstract process() method all agents must implement |
+| 2 | Strategy | SearchAgent, NeedsAgent, ComparisonAgent, RecommendAgent, GeneralAgent | Swappable handlers chosen at runtime by RouterAgent |
+| 3 | Singleton | RAGTool (tools/rag_tool.py) | Single shared FAISS vector store instance |
+| 4 | Chain of Responsibility | RouterAgent | Decides which pipeline owns the query |
+| 5 | Observer | EvaluatorAgent | Observes and evaluates every response automatically |
 
 ---
 
-## 🛍️ Business Scenario — PakShop E-Commerce Store
+## 🛒 Platforms Searched (Real-time)
 
-### Products Covered
-| Category | Products |
-|----------|---------|
-| Electronics | Samsung Galaxy A54, iPhone 13, Xiaomi Redmi Note 12, HP Laptop 15s, JBL Bluetooth Speaker |
-| Clothing | Men's Shalwar Kameez, Women's Lawn Suit (3-piece), Kids School Uniform, Casual Sneakers |
-| Home Appliances | Dawlance Refrigerator, Orient AC 1.5 Ton, Anex Blender |
-
-### Payment Methods
-JazzCash · Easypaisa · Bank Transfer · Cash on Delivery (COD)
-
-### Shipping
-- **Major Cities** (Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad): 2–3 business days
-- **Other Cities:** 4–6 business days
-- **Remote Areas:** 7–10 business days
-- **Free delivery** on orders above Rs. 5,000
-
-### Return Policy
-- 7-day return window from delivery date
-- Refund processed in 5–7 business days
-- COD refunds via JazzCash or Easypaisa
+| Platform | Coverage |
+|---|---|
+| Daraz.pk | Electronics, clothing, appliances, accessories |
+| Telemart.pk | Electronics and gadgets |
+| Homeshopping.pk | Home appliances and general products |
 
 ---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| Agent Orchestration | LangGraph (StateGraph) | Multi-agent graph pipeline |
+| LLM | Groq — llama-3.3-70b-versatile | Fast language model inference |
+| Embeddings | HuggingFace — all-MiniLM-L6-v2 | Semantic text vectorization |
+| Vector Store | FAISS | Similarity search over knowledge base |
+| UI | Streamlit | Dark-themed interactive web chat |
+| Authentication | JWT (python-jose) + bcrypt (passlib) | Secure user login and registration |
+| Database | SQLite — chat_history.db + pakcommerce.db | Per-user session and message persistence |
+| Language | Python 3.10+ | Core language |
+
+---
+
+---
+
+## 🔐 Authentication System (auth.py)
+
+The project includes a full user auth system:
+
+- User registration with bcrypt password hashing
+- Login with email and password verification
+- JWT tokens (HS256) with 30-day expiry
+- Per-user session creation, loading, and deletion
+- All data stored in pakcommerce.db (SQLite)
+
+---
+
+## ⚙️ Quickstart
+
+### Prerequisites
+
+- Python 3.10+
+- Free Groq API key from https://console.groq.com
+
+### Step 1 — Clone the repository
+git clone https://github.com/amna-techcorp17/pakshop-ai-assistant.git
+cd pakshop-ai-assistant
+
+### Step 2 — Create and activate virtual environment
+python -m venv venv
+Windows
+venv\Scripts\activate
+Mac / Linux
+source venv/bin/activate
+
+### Step 3 — Install dependencies
+pip install -r requirements.txt
+
+### Step 4 — Set your Groq API Key
+Windows PowerShell
+$env:GROQ_API_KEY="your_groq_api_key_here"
+Mac / Linux
+export GROQ_API_KEY="your_groq_api_key_here"
+
+### Step 5 — Run the app
+streamlit run main.py
+Open your browser at http://localhost:8501
+
+---
+
+## 🧪 Sample Queries to Test
+
+| Query Type | Example |
+|---|---|
+| Price Search | "iPhone 13 ki price kya hai?" |
+| Platform Compare | "Compare iPhone prices across all platforms" |
+| Budget Search | "Find best laptop under Rs. 50,000" |
+| Best Deal | "Which platform has cheapest Samsung Galaxy?" |
+| Shipping Query | "Lahore mein delivery kitne din mein hogi?" |
+| Returns | "Main product return karna chahta hun" |
+| Payment | "Kya COD available hai?" |
+| General | "Assalam-o-Alaikum!" |
+
+---
+
+## 📊 Automated Evaluation (EvaluatorAgent)
+
+Every response is auto-scored on:
+
+| Metric | Description |
+|---|---|
+| Relevance | Is the answer on-topic for the query? |
+| Accuracy | Is information correct per the knowledge base? |
+| Friendliness | Is tone warm and customer-friendly? |
+| Completeness | Does it fully address the query? |
+| Overall | Composite score out of 10 |
+
+---
+
+## 🔑 Key Features
+
+- Multi-Agent Pipeline — 7 specialized agents in a sequential LangGraph graph
+- Real Platform Search — Daraz, Telemart, Homeshopping live search
+- JWT Authentication — Secure register/login with bcrypt + python-jose
+- Persistent Chat History — Per-user SQLite session storage
+- Bilingual Support — Handles Urdu, Roman Urdu, and English
+- Auto Response Evaluation — Every reply scored on 4 quality dimensions
+- 5 OOP Design Patterns — Production-grade software architecture
+- Dark UI — Custom Streamlit dark theme with gradient branding
+
+---
+
+## 📦 Dependencies
+
+langgraph
+langchain
+langchain-groq
+langchain-community
+faiss-cpu
+python-dotenv
+streamlit
+pypdf
+sentence-transformers
+python-jose
+passlib[bcrypt]
+
 
 ## 🛠️ Tech Stack
 
@@ -105,83 +215,53 @@ JazzCash · Easypaisa · Bank Transfer · Cash on Delivery (COD)
 | LLM | Groq — `llama-3.3-70b-versatile` | Fast language model inference |
 | Embeddings | HuggingFace — `all-MiniLM-L6-v2` | Text vectorization |
 | Vector Store | FAISS | Similarity search over knowledge base |
-| UI | Streamlit | Interactive web chat interface |
 | Language | Python 3.10+ | Core language |
 
 ---
 
 ## 📁 Project Structure
 
-```
-pakistan-ecom-assistant/
+```text
+pakshop-ai-assistant/
 │
 ├── agents/
 │   ├── __init__.py
-│   ├── base_agent.py          # Abstract base class (Template Method Pattern)
-│   ├── router_agent.py        # Query classifier (Chain of Responsibility)
-│   ├── rag_agent.py           # Knowledge retrieval agent (Strategy Pattern)
-│   ├── general_agent.py       # Conversational agent (Strategy Pattern)
-│   └── evaluator_agent.py     # Quality evaluator (Observer Pattern)
+│   ├── base_agent.py
+│   ├── router_agent.py
+│   ├── search_agent.py
+│   ├── needs_agent.py
+│   ├── comparison_agent.py
+│   ├── recommend_agent.py
+│   ├── general_agent.py
+│   └── evaluator_agent.py
 │
 ├── tools/
 │   ├── __init__.py
-│   └── rag_tool.py            # FAISS vector store wrapper (Singleton Pattern)
+│   └── rag_tool.py
 │
-├── knowledge_base/
-│   ├── products.txt           # Product catalog (Electronics, Clothing, Appliances)
-│   ├── return_policy.txt      # Return & refund policy
-│   └── shipping_info.txt      # Shipping areas, charges & courier partners
+├── static/
+│   └── (CSS, images, assets)
 │
-├── vector_store/              # Auto-generated FAISS index
-├── graph.py                   # LangGraph StateGraph pipeline
-├── main.py                    # Streamlit web application entry point
-├── requirements.txt           # Python dependencies
-└── README.md                  # Project documentation
+├── graph.py
+├── main.py
+├── auth.py
+├── app.py
+├── index.py
+├── setup.py
+├── index.html
+├── chat_history.db
+├── pakcommerce.db
+├── .gitignore
+└── README.md
 ```
 
----
 
-## ⚙️ Quickstart
-
-### Prerequisites
-- Python 3.10+
-- Free Groq API key → [console.groq.com](https://console.groq.com)
-
-### Step 1 — Navigate to project folder
-```bash
-cd "pakistan-ecom-assistant"
-```
-
-### Step 2 — Create & activate virtual environment
-```bash
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # Mac/Linux
-```
-
-### Step 3 — Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Step 4 — Set Groq API Key
-```bash
-# Windows PowerShell
-$env:GROQ_API_KEY="your_groq_api_key_here"
-```
-
-### Step 5 — Run the app
-```bash
-streamlit run main.py
-```
-
----
 
 ## 🧪 Sample Queries to Test
 
 | Query Type | Example |
 |-----------|---------|
-| 🛒 Product Price | `"iPhone 13 ki price kya hai?"` |
+| 🛒 Product Price | `"iPhone 13 ki price kya hai sab platforms pe?"` |
 | 🚚 Shipping | `"Lahore mein delivery kitne din mein hogi?"` |
 | 🔄 Returns | `"Main product return karna chahta hun"` |
 | 💳 Payment | `"Kya COD available hai?"` |
