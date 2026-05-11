@@ -281,21 +281,6 @@ Daraz vs Telemart comparison
 
 ---
 
-# 📸 Recommended Screenshots
-
-Create a folder named:
-
-```bash
-/screenshots
-```
-
-Then add images:
-
-```markdown
-![Home UI](screenshots/home.png)
-![Chat Interface](screenshots/chat.png)
-![Product Comparison](screenshots/products.png)
-```
 
 ---
 
