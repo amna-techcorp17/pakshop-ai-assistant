@@ -1,317 +1,366 @@
-# 🛍️ PakShop — AI Customer Assistant
-> **A production-style Multi-Agent RAG System for a Pakistani E-Commerce Store, built with LangGraph, Groq, and FAISS.**
+# 🚀 PakShop AI Assistant
 
-![LangGraph](https://img.shields.io/badge/LangGraph-1.0+-1C3C3C?logo=langchain&logoColor=white)
-![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b--versatile-F55036?logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
-![FAISS](https://img.shields.io/badge/FAISS-VectorStore-0078D4)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+> Pakistan’s intelligent AI-powered shopping assistant that compares products across multiple e-commerce platforms in real time.
 
----
+<div align="center">
 
-## 📌 Project Overview
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi)
+![LangGraph](https://img.shields.io/badge/LangGraph-AI%20Workflow-black?style=for-the-badge)
+![Groq](https://img.shields.io/badge/Groq-LLM-orange?style=for-the-badge)
+![HTML](https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JS-purple?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**PakShop AI Assistant** is a production-style, multi-agent AI shopping chatbot built for Pakistani e-commerce. It searches real platforms (Daraz, Telemart, Homeshopping), analyzes customer needs, compares products, and delivers smart recommendations — all powered by **Groq's llama-3.3-70b-versatile** LLM orchestrated through **LangGraph**.
-
-The system features full **JWT-based user authentication**, **persistent chat history** per user via SQLite, and an **EvaluatorAgent** that automatically scores every response on relevance, accuracy, friendliness, and completeness.
+</div>
 
 ---
 
+# 🧠 About The Project
 
+PakShop AI Assistant is an advanced multi-agent AI shopping assistant designed specifically for Pakistani e-commerce platforms.
 
+It intelligently searches products, compares prices, evaluates deals, and recommends the best buying options from:
+
+- Daraz
+- Telemart
+- Homeshopping
+
+The system uses an AI agent architecture powered by:
+
+- LangGraph
+- FastAPI
+- Groq LLM
+- Multi-Agent Routing
+- Intelligent Product Evaluation
+
+Users can chat naturally like:
 
 ```text
-User Query
-    │
-    ▼
-┌─────────────┐
-│ RouterAgent │  ← Classifies: 'search' or 'general'
-└──────┬──────┘
-       │
-  ┌────┴────┐
-  ▼          ▼
-SearchAgent  GeneralAgent
-  │
-  ▼
-NeedsAgent        ← Extracts customer requirements
-  │
-  ▼
-ComparisonAgent   ← Compares shortlisted products
-  │
-  ▼
-RecommendAgent    ← Picks best match with reasoning
-  │
-  └──────────────┐
-                 ▼
-        ┌──────────────────┐
-        │  EvaluatorAgent  │  ← Auto-scores response (1–10)
-        └────────┬─────────┘
-                 ▼
-           Final Response → User
+“Mujhe 50k ka best phone suggest karo”
+“Compare iPhone prices”
+“Best gaming laptop under 1 lakh”
 ```
 
-## 🤖 Agent Breakdown
-
-| Agent | File | Role | Design Pattern |
-|---|---|---|---|
-| RouterAgent | agents/router_agent.py | Classifies query as 'search' or 'general' | Chain of Responsibility |
-| SearchAgent | agents/search_agent.py | Searches Daraz, Telemart, Homeshopping | Strategy Pattern |
-| NeedsAgent | agents/needs_agent.py | Extracts and analyzes customer requirements | Strategy Pattern |
-| ComparisonAgent | agents/comparison_agent.py | Compares shortlisted products side by side | Strategy Pattern |
-| RecommendAgent | agents/recommend_agent.py | Picks best product and explains why | Strategy Pattern |
-| GeneralAgent | agents/general_agent.py | Handles greetings and general conversation | Strategy Pattern |
-| EvaluatorAgent | agents/evaluator_agent.py | Scores response on 4 quality metrics | Observer Pattern |
-| BaseAgent | agents/base_agent.py | Abstract base — enforces process() interface | Template Method Pattern |
+and the AI responds with smart recommendations, platform links, and product insights.
 
 ---
 
-## 🎨 Design Patterns (5 Implemented)
+# ✨ Features
 
-| # | Pattern | Where Used | How |
-|---|---|---|---|
-| 1 | Template Method | BaseAgent | Abstract process() method all agents must implement |
-| 2 | Strategy | SearchAgent, NeedsAgent, ComparisonAgent, RecommendAgent, GeneralAgent | Swappable handlers chosen at runtime by RouterAgent |
-| 3 | Singleton | RAGTool (tools/rag_tool.py) | Single shared FAISS vector store instance |
-| 4 | Chain of Responsibility | RouterAgent | Decides which pipeline owns the query |
-| 5 | Observer | EvaluatorAgent | Observes and evaluates every response automatically |
+## 🤖 AI Multi-Agent Architecture
 
----
-
-## 🛒 Platforms Searched (Real-time)
-
-| Platform | Coverage |
-|---|---|
-| Daraz.pk | Electronics, clothing, appliances, accessories |
-| Telemart.pk | Electronics and gadgets |
-| Homeshopping.pk | Home appliances and general products |
+- Router Agent
+- Search Agent
+- Recommendation Agent
+- Evaluator Agent
+- General Conversation Agent
 
 ---
 
-## 🛠️ Tech Stack
+## 🛒 Real-Time Product Intelligence
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Agent Orchestration | LangGraph (StateGraph) | Multi-agent graph pipeline |
-| LLM | Groq — llama-3.3-70b-versatile | Fast language model inference |
-| Embeddings | HuggingFace — all-MiniLM-L6-v2 | Semantic text vectorization |
-| Vector Store | FAISS | Similarity search over knowledge base |
-| UI | Streamlit | Dark-themed interactive web chat |
-| Authentication | JWT (python-jose) + bcrypt (passlib) | Secure user login and registration |
-| Database | SQLite — chat_history.db + pakcommerce.db | Per-user session and message persistence |
-| Language | Python 3.10+ | Core language |
+✅ Product comparison  
+✅ Multi-platform search  
+✅ Smart recommendations  
+✅ Price evaluation  
+✅ Availability tracking  
+✅ Delivery insights
 
 ---
 
----
+## 💬 Modern Chat Experience
 
-## 🔐 Authentication System (auth.py)
-
-The project includes a full user auth system:
-
-- User registration with bcrypt password hashing
-- Login with email and password verification
-- JWT tokens (HS256) with 30-day expiry
-- Per-user session creation, loading, and deletion
-- All data stored in pakcommerce.db (SQLite)
+- Beautiful dark UI
+- ChatGPT-inspired layout
+- Typing animations
+- Smart loading states
+- Session history
+- Login & Registration
+- Persistent conversations
 
 ---
 
-## ⚙️ Quickstart
+## ⚡ Smart Failure Handling
 
-### Prerequisites
+If a platform becomes slow or unresponsive:
 
-- Python 3.10+
-- Free Groq API key from https://console.groq.com
-
-### Step 1 — Clone the repository
-git clone https://github.com/amna-techcorp17/pakshop-ai-assistant.git
-cd pakshop-ai-assistant
-
-### Step 2 — Create and activate virtual environment
-python -m venv venv
-Windows
-venv\Scripts\activate
-Mac / Linux
-source venv/bin/activate
-
-### Step 3 — Install dependencies
-pip install -r requirements.txt
-
-### Step 4 — Set your Groq API Key
-Windows PowerShell
-$env:GROQ_API_KEY="your_groq_api_key_here"
-Mac / Linux
-export GROQ_API_KEY="your_groq_api_key_here"
-
-### Step 5 — Run the app
-streamlit run main.py
-Open your browser at http://localhost:8501
+- AI detects timeout automatically
+- Partial results are still generated
+- User is informed which platform failed
+- System avoids full response blocking
 
 ---
 
-## 🧪 Sample Queries to Test
+# 🏗️ System Architecture
 
-| Query Type | Example |
-|---|---|
-| Price Search | "iPhone 13 ki price kya hai?" |
-| Platform Compare | "Compare iPhone prices across all platforms" |
-| Budget Search | "Find best laptop under Rs. 50,000" |
-| Best Deal | "Which platform has cheapest Samsung Galaxy?" |
-| Shipping Query | "Lahore mein delivery kitne din mein hogi?" |
-| Returns | "Main product return karna chahta hun" |
-| Payment | "Kya COD available hai?" |
-| General | "Assalam-o-Alaikum!" |
+```mermaid
+flowchart TD
 
----
+A[User Query] --> B[Router Agent]
 
-## 📊 Automated Evaluation (EvaluatorAgent)
+B --> C{Route Type}
 
-Every response is auto-scored on:
+C -->|Search| D[Search Agent]
+C -->|General| E[General Agent]
 
-| Metric | Description |
-|---|---|
-| Relevance | Is the answer on-topic for the query? |
-| Accuracy | Is information correct per the knowledge base? |
-| Friendliness | Is tone warm and customer-friendly? |
-| Completeness | Does it fully address the query? |
-| Overall | Composite score out of 10 |
+D --> F[Daraz]
+D --> G[Telemart]
+D --> H[Homeshopping]
+
+F --> I[Evaluator Agent]
+G --> I
+H --> I
+
+I --> J[Recommendation Agent]
+
+J --> K[Final AI Response]
+```
 
 ---
 
-## 🔑 Key Features
+# 🧠 AI Workflow
 
-- Multi-Agent Pipeline — 7 specialized agents in a sequential LangGraph graph
-- Real Platform Search — Daraz, Telemart, Homeshopping live search
-- JWT Authentication — Secure register/login with bcrypt + python-jose
-- Persistent Chat History — Per-user SQLite session storage
-- Bilingual Support — Handles Urdu, Roman Urdu, and English
-- Auto Response Evaluation — Every reply scored on 4 quality dimensions
-- 5 OOP Design Patterns — Production-grade software architecture
-- Dark UI — Custom Streamlit dark theme with gradient branding
+```mermaid
+sequenceDiagram
 
----
+participant U as User
+participant R as Router Agent
+participant S as Search Agent
+participant E as Evaluator Agent
+participant A as Recommendation Agent
 
-## 📦 Dependencies
-
-langgraph
-langchain
-langchain-groq
-langchain-community
-faiss-cpu
-python-dotenv
-streamlit
-pypdf
-sentence-transformers
-python-jose
-passlib[bcrypt]
-
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Agent Orchestration | LangGraph | Multi-agent graph pipeline |
-| LLM | Groq — `llama-3.3-70b-versatile` | Fast language model inference |
-| Embeddings | HuggingFace — `all-MiniLM-L6-v2` | Text vectorization |
-| Vector Store | FAISS | Similarity search over knowledge base |
-| Language | Python 3.10+ | Core language |
+U->>R: User Query
+R->>S: Route to Search
+S->>S: Search Platforms
+S->>E: Send Product Data
+E->>A: Best Product Analysis
+A->>U: Final Recommendation
+```
 
 ---
 
-## 📁 Project Structure
+# 🖥️ UI Preview
+
+## 🌙 Premium Dark Interface
 
 ```text
-pakshop-ai-assistant/
+ ---------------------------------------------------------
+| Sidebar |         AI Chat Area        | Product Panel  |
+ ---------------------------------------------------------
+| Home    | User: Best phone under 50k  | 📱 Samsung A15 |
+| History | AI: Here are best options   | ⭐ 4.5 Rating  |
+| Saved   | Thinking...                 | 💸 Rs. 48,999 |
+| Settings|                             | 🛒 Buy Now     |
+ ---------------------------------------------------------
+```
+
+---
+
+# 📂 Project Structure
+
+```bash
+pakistan-ecom-assistant/
 │
 ├── agents/
-│   ├── __init__.py
 │   ├── base_agent.py
 │   ├── router_agent.py
 │   ├── search_agent.py
-│   ├── needs_agent.py
-│   ├── comparison_agent.py
 │   ├── recommend_agent.py
-│   ├── general_agent.py
-│   └── evaluator_agent.py
-│
-├── tools/
-│   ├── __init__.py
-│   └── rag_tool.py
+│   ├── evaluator_agent.py
+│   └── general_agent.py
 │
 ├── static/
-│   └── (CSS, images, assets)
+│   ├── style.css
+│   └── script.js
 │
-├── graph.py
-├── main.py
-├── auth.py
 ├── app.py
-├── index.py
-├── setup.py
+├── graph.py
+├── auth.py
 ├── index.html
-├── chat_history.db
-├── pakcommerce.db
-├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
+---
 
+# ⚙️ Tech Stack
 
-## 🧪 Sample Queries to Test
-
-| Query Type | Example |
-|-----------|---------|
-| 🛒 Product Price | `"iPhone 13 ki price kya hai sab platforms pe?"` |
-| 🚚 Shipping | `"Lahore mein delivery kitne din mein hogi?"` |
-| 🔄 Returns | `"Main product return karna chahta hun"` |
-| 💳 Payment | `"Kya COD available hai?"` |
-| 📦 Stock | `"Samsung Galaxy A54 available hai?"` |
-| 👋 General | `"Assalam-o-Alaikum!"` |
+| Technology | Purpose |
+|---|---|
+| Python | Backend |
+| FastAPI | API Framework |
+| LangGraph | AI Workflow Engine |
+| LangChain | LLM Integration |
+| Groq | AI Model Provider |
+| HTML/CSS/JS | Frontend |
+| SQLite | Database |
+| JWT | Authentication |
 
 ---
 
-## 📊 Evaluation Metrics
+# 🚀 Installation
 
-Every response is automatically scored by `EvaluatorAgent` on:
+## 1️⃣ Clone Repository
 
-| Metric | Description |
-|--------|-------------|
-| **Relevance** | Is the answer relevant to the customer's query? |
-| **Accuracy** | Is the information factually correct per the knowledge base? |
-| **Friendliness** | Is the tone warm, professional, and customer-friendly? |
-| **Completeness** | Does it fully address all parts of the query? |
-| **Overall** | Composite score out of 10 |
-
----
-
-## 📦 Requirements
-
-```
-langgraph
-langchain
-langchain-groq
-langchain-community
-faiss-cpu
-python-dotenv
-streamlit
-pypdf
-sentence-transformers
+```bash
+git clone https://github.com/amna-techcorp17/pakshop-ai-assistant.git
+cd pakshop-ai-assistant
 ```
 
 ---
 
-## 👩‍💻 Developer
+## 2️⃣ Create Virtual Environment
 
-| | |
-|--|--|
-| **Name** | Amna |
-| **Course** | Artificial Intelligence |
-| **Project** | Final Project — Multi-Agent Agentic RAG System |
-| **Stack** | LangGraph + Groq + FAISS + Streamlit |
-| **Date** | May 2026 |
+### Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
 ---
 
-## 📄 License
+## 3️⃣ Install Dependencies
 
-MIT — use, share, remix freely.
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4️⃣ Configure Environment Variables
+
+Create `.env`
+
+```env
+GROQ_API_KEY=your_api_key_here
+SECRET_KEY=your_secret_key
+```
+
+---
+
+## 5️⃣ Run The Server
+
+```bash
+python -m uvicorn app:app --reload
+```
+
+---
+
+# 🌐 Open In Browser
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+# 🔥 Example Queries
+
+```text
+Find best phone under 50000
+Compare iPhone prices
+Best gaming laptop in Pakistan
+Cheapest Samsung phone
+Daraz vs Telemart comparison
+```
+
+---
+
+# 🧩 Future Improvements
+
+- Voice Assistant 🎤
+- Live Product Cards 🛍️
+- AI Memory System 🧠
+- Personalized Recommendations
+- Real Product Images
+- Mobile Responsive Design
+- Deployment on Render/Vercel
+- Payment Integration
+- Wishlist & Saved Products
+
+---
+
+
+---
+
+# 🛡️ Authentication System
+
+✅ User Registration  
+✅ JWT Login  
+✅ Session Management  
+✅ Saved Chat History  
+✅ Local + Server Storage
+
+---
+
+# 📊 Agent Decision Flow
+
+```mermaid
+graph LR
+
+A[User Query]
+--> B[Router Agent]
+
+B --> C[Search Request]
+B --> D[General Question]
+
+C --> E[Search Agent]
+E --> F[Evaluator Agent]
+F --> G[Recommendation Agent]
+
+D --> H[General Agent]
+
+G --> I[Final Response]
+H --> I
+```
+
+---
+
+# 🎯 Why This Project Matters
+
+This project demonstrates:
+
+- AI Agent Engineering
+- Multi-Agent Systems
+- LangGraph Workflows
+- LLM Orchestration
+- FastAPI Backend Design
+- Modern Frontend UI
+- Real-world AI Product Search
+
+---
+
+# 👩‍💻 Author
+
+## Amna Chaudhary
+
+AI Engineer • Python Developer • FastAPI Enthusiast • LangGraph Builder
+
+GitHub: https://github.com/amna-techcorp17
+
+---
+
+# ⭐ Support
+
+If you like this project:
+
+⭐ Star the repository  
+🍴 Fork the project  
+🧠 Contribute improvements
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+<div align="center">
+
+# 💜 PakShop AI Assistant
+
+### Smart Shopping Starts With AI
+
+</div>
