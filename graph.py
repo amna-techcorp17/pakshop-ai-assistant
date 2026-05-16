@@ -96,9 +96,10 @@ NEVER mention PriceOye, Mega.pk, iShopping, Symbios, or any other platform.
 Rules:
 - Answer in the SAME language the user used (Urdu or English)
 - If user asked a follow-up question, relate it to previous conversation
-- Provide helpful product info, prices (PKR), specs
-- Be concise — max 4-5 sentences
-- Mention only Daraz, Telemart, Homeshopping
+- Give 2-3 specific product recommendations with name, key specs, price in PKR
+- Format each as: "1. [Product Name] - [specs] - PKR [price] ([Platform])"
+- At the end, add: "🔗 Search links:" then list Daraz, Telemart, Homeshopping search URLs for the top product
+- Be concise and helpful
 - Do NOT add "Thanks for choosing..." at the end"""
     
     msgs = build_messages(state, system)
@@ -135,7 +136,7 @@ Give specific product recommendations for Pakistan market.
 ONLY mention Daraz, Telemart, Homeshopping — NEVER any other platform.
 Answer in user's language (Urdu or English).
 Remember the conversation history and continue naturally.
-Format: product name, key specs, approximate price in PKR.
+Format each as: "1. [Product Name] - [specs] - PKR [price]"
 Max 3 recommendations. Be concise."""
     
     msgs = build_messages(state, system)

@@ -1,25 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PakShop AI — Smart Shopping Assistant</title>
+<title>PakShop AI - Smart Shopping Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0F172A; --surface:#1E293B; --surface2:#253347;
-  --accent:#6366F1; --accent2:#818CF8; --glow:rgba(99,102,241,0.15);
-  --text:#F1F5F9; --text2:#94A3B8; --text3:#64748B;
-  --border:rgba(255,255,255,0.07); --border2:rgba(99,102,241,0.3);
-  --green:#10B981; --amber:#F59E0B; --red:#EF4444;
-  --sw:220px; --pw:340px; --r:12px; --rs:8px;
-}
+:root{--bg:#0F172A;--surface:#1E293B;--surface2:#253347;--accent:#6366F1;--accent2:#818CF8;--glow:rgba(99,102,241,0.15);--text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;--border:rgba(255,255,255,0.07);--border2:rgba(99,102,241,0.3);--green:#10B981;--red:#EF4444;--sw:220px;--pw:340px;--r:12px;--rs:8px;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;font-size:14px;}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px;}
-
-/* ── SIDEBAR ── */
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px;}
 #sidebar{width:var(--sw);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;transition:width .3s,padding .3s;overflow:hidden;}
 #sidebar.closed{width:0;padding:0;}
 .brand{display:flex;align-items:center;gap:10px;padding:0 4px;margin-bottom:24px;}
@@ -38,8 +28,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .u-av{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#fff;flex-shrink:0;}
 .u-tx h4{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
 .u-tx p{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
-
-/* ── MAIN ── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 #hdr{padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hl{display:flex;align-items:center;gap:12px;}
@@ -48,62 +36,48 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .ht h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
 .ht p{font-size:11px;color:var(--text3);}
 .hr{display:flex;gap:8px;align-items:center;}
-.cpill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:6px 10px;font-size:12px;color:var(--text2);}
 .thbtn{width:32px;height:32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:15px;}
 .lbtn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;}
 .lbtn:hover{opacity:.85;}
-
-#welcome{padding:16px 24px 0;flex-shrink:0;}
-#welcome h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
-#welcome p{font-size:12px;color:var(--text3);margin-top:3px;}
-
 #chips{padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
 .chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .chip:hover{border-color:var(--accent);color:var(--accent2);background:var(--glow);}
-
 #chat-area{flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:16px;}
-.mrow{display:flex;align-items:flex-start;gap:10px;animation:fu .3s ease;}
+.mrow{display:flex;align-items:flex-start;gap:10px;animation:fu .3s ease;width:100%;}
 .mrow.u{flex-direction:row-reverse;}
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.av.b{background:var(--accent);}
-.av.u{background:var(--surface2);}
-
-/* FIX: bubble width properly fills, no weird wrapping */
-.bub{max-width:68%;padding:12px 16px;border-radius:var(--r);font-size:13px;line-height:1.7;word-break:break-word;white-space:pre-wrap;}
+.av.b{background:var(--accent);}.av.u{background:var(--surface2);}
+.mstack{max-width:min(72%,720px);min-width:220px;display:flex;flex-direction:column;align-items:flex-start;}
+.mrow.u .mstack{align-items:flex-end;}
+.bub{width:fit-content;max-width:100%;padding:12px 16px;border-radius:var(--r);font-size:13px;line-height:1.65;word-break:normal;overflow-wrap:break-word;white-space:pre-line;}
 .bub.b{background:var(--surface);border:1px solid var(--border);border-radius:4px 12px 12px 12px;}
 .bub.u{background:var(--accent);color:#fff;border-radius:12px 4px 12px 12px;}
 .mtime{font-size:10px;color:var(--text3);margin-top:4px;}
-/* FIX: typing bubble compact — no big empty space */
+.link-drop{margin-top:8px;width:min(100%,360px);}
+.link-drop summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;color:var(--text2);font-size:12px;cursor:pointer;user-select:none;}
+.link-drop summary::-webkit-details-marker{display:none;}
+.link-drop summary::after{content:'v';font-size:10px;color:var(--text3);}
+.link-drop[open] summary::after{content:'^';}
+.link-menu{display:grid;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:8px;margin-top:6px;}
+.link-menu a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:var(--rs);color:var(--text);text-decoration:none;font-size:12px;background:var(--bg);}
+.link-menu a:hover{background:var(--glow);color:var(--accent2);}
 .typbub{display:inline-flex;align-items:center;gap:5px;padding:10px 14px;}
 .typbub span{width:6px;height:6px;background:var(--accent2);border-radius:50%;animation:bl 1.2s infinite;flex-shrink:0;}
-.typbub span:nth-child(2){animation-delay:.2s;}
-.typbub span:nth-child(3){animation-delay:.4s;}
+.typbub span:nth-child(2){animation-delay:.2s;}.typbub span:nth-child(3){animation-delay:.4s;}
 .typlbl{font-size:11px;color:var(--text3);white-space:nowrap;}
 @keyframes bl{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
-
-/* FIX: input box — no premature wrapping */
 #iarea{padding:12px 24px 16px;flex-shrink:0;border-top:1px solid var(--border);}
 #iwrap{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 14px;transition:border-color .2s;}
 #iwrap:focus-within{border-color:var(--border2);}
-#uinput{
-  flex:1;background:none;border:none;outline:none;
-  color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;
-  resize:none;height:24px;max-height:120px;
-  overflow-y:hidden;line-height:1.6;
-  word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;
-  width:0;min-width:0;
-}
+#uinput{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;resize:none;height:24px;max-height:120px;overflow-y:hidden;line-height:1.6;word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;width:0;min-width:0;}
 #uinput::placeholder{color:var(--text3);white-space:nowrap;}
 .ibtn{width:32px;height:32px;border:none;border-radius:var(--rs);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .2s;}
 #vbtn{background:var(--surface2);color:var(--text2);}
-#vbtn:hover{background:var(--glow);color:var(--accent2);}
 #vbtn.rec{background:#EF444420;color:var(--red);animation:pulse 1s infinite;}
 #sbtn{background:var(--accent);color:#fff;}
 #sbtn:hover{background:var(--accent2);}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-
-/* ── PRODUCT PANEL ── */
 #ppanel{width:var(--pw);flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .3s;}
 #ppanel.closed{width:0;}
 .phdr{padding:14px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
@@ -113,52 +87,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .pempty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;text-align:center;padding:20px;}
 .pempty .ei{font-size:42px;opacity:.2;}
 .pempty p{font-size:12px;color:var(--text3);line-height:1.6;}
-
-/* Product card */
-.pcard{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s,transform .2s;}
+.pcard{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer;}
 .pcard:hover{border-color:var(--border2);transform:translateY(-1px);}
-.badge-row{display:flex;gap:6px;padding:10px 12px 0;}
+.badge-row{display:flex;gap:6px;padding:10px 12px 0;align-items:center;justify-content:space-between;}
 .bdg{font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;text-transform:uppercase;}
-.bdg.best{background:#10B98120;color:#10B981;}
-.bdg.val{background:#6366F120;color:#818CF8;}
-.bdg.bat{background:#F59E0B20;color:#F59E0B;}
-
-/* Product image area */
-.cimg{height:130px;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;margin:8px 12px;border-radius:var(--rs);overflow:hidden;}
-.cimg img{max-height:115px;max-width:100%;object-fit:contain;}
-.cimg .noimg{font-size:40px;opacity:.3;}
-.wbtn{position:absolute;top:6px;right:6px;width:26px;height:26px;border:none;border-radius:50%;background:var(--surface2);cursor:pointer;font-size:13px;transition:transform .2s;}
+.bdg.best{background:#10B98120;color:#10B981;}.bdg.val{background:#6366F120;color:#818CF8;}.bdg.bat{background:#F59E0B20;color:#F59E0B;}
+.card-main{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px 12px 12px;align-items:stretch;}
+.cimg{height:96px;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;border-radius:var(--rs);overflow:hidden;}
+.cimg img{width:100%;height:100%;object-fit:cover;}
+.wbtn{width:26px;height:26px;border:none;border-radius:50%;background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;transition:transform .2s;}
 .wbtn:hover{transform:scale(1.2);}
-.cbody{padding:8px 12px 12px;}
+.cbody{min-width:0;display:flex;flex-direction:column;}
 .cname{font-size:13px;font-weight:500;margin-bottom:4px;}
 .cstars{display:flex;align-items:center;gap:4px;margin-bottom:7px;}
-.cstars .st{color:#F59E0B;font-size:12px;}
-.cstars .cnt{font-size:11px;color:var(--text3);}
-.cprice{font-size:17px;font-weight:700;color:var(--accent2);margin-bottom:7px;}
+.cstars .st{color:#F59E0B;font-size:12px;}.cstars .cnt{font-size:11px;color:var(--text3);}
+.cprice{font-size:16px;font-weight:700;color:var(--accent2);margin-bottom:7px;}
 .cplat{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
-.pdot{width:8px;height:8px;border-radius:50%;}
-.plbl{font-size:11px;color:var(--text3);}
-.vbtn{width:100%;padding:8px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;font-size:12px;font-weight:500;cursor:pointer;}
+.pdot{width:8px;height:8px;border-radius:50%;}.plbl{font-size:11px;color:var(--text3);}
+.vbtn{width:100%;padding:8px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;font-size:12px;font-weight:500;cursor:pointer;margin-top:auto;}
 .vbtn:hover{opacity:.85;}
-
-/* Comparison table */
 .csec{background:var(--surface2);border-radius:var(--r);padding:12px;}
-.csec h4{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px;}
+.csec h4{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;}
+.ctbl-note{font-size:11px;color:var(--text3);margin-bottom:8px;}
 .ctbl{width:100%;border-collapse:collapse;}
 .ctbl th{font-size:10px;color:var(--text3);text-align:left;padding-bottom:6px;font-weight:400;}
-.ctbl td{font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);}
+.ctbl td{font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);}
 .ctbl tr:last-child td{border-bottom:none;}
 .pcell{display:flex;align-items:center;gap:6px;}
 .pi{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
 .sr{color:#F59E0B;font-size:11px;}
-
-/* ── AUTH MODAL ── */
 #aoverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 #aoverlay.show{display:flex;}
 .abox{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:34px;width:380px;position:relative;animation:si .2s ease;}
 @keyframes si{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .acls{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;}
-.acls:hover{color:var(--text);}
 .alogo{text-align:center;margin-bottom:20px;}
 .alogo h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
 .alogo p{font-size:12px;color:var(--text3);margin-top:4px;}
@@ -170,17 +132,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .fg input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif;}
 .fg input:focus{border-color:var(--border2);}
 .hbox{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:8px 10px;margin-top:6px;display:none;}
-.hi{font-size:11px;color:var(--text3);padding:2px 0;transition:color .2s;}
-.hi.ok{color:var(--green);}
+.hi{font-size:11px;color:var(--text3);padding:2px 0;transition:color .2s;}.hi.ok{color:var(--green);}
 .sbtn2{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:11px;font-size:14px;font-weight:500;cursor:pointer;margin-top:6px;}
 .sbtn2:hover{opacity:.88;}
 .aerr{font-size:12px;color:var(--red);background:#EF444415;border:1px solid #EF444430;border-radius:var(--rs);padding:8px 10px;margin-top:10px;display:none;}
-
-/* ── TOAST ── */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 20px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* Page views */
 .page{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:24px;}
 .page.active{display:flex;}
 .page-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;}
@@ -189,23 +146,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .info-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
 .info-card h3{font-size:14px;font-weight:500;margin-bottom:6px;}
 .info-card p{font-size:12px;color:var(--text3);line-height:1.6;}
+@media(max-width:1050px){
+  :root{--pw:300px;--sw:200px;}
+  .mstack{max-width:82%;min-width:0;}
+  .card-main{grid-template-columns:82px 1fr;}
+  .cimg{height:88px;}
+}
+@media(max-width:760px){
+  body{overflow:auto;}
+  #sidebar,#ppanel{display:none;}
+  #chat-area{padding:14px;}
+  #iarea{padding:10px 14px 14px;}
+  .mstack{max-width:calc(100% - 42px);}
+  .bub{font-size:13px;}
+  .hr .cpill{display:none;}
+}
 </style>
 </head>
 <body>
-
-<!-- AUTH -->
 <div id="aoverlay">
   <div class="abox">
-    <button class="acls" onclick="closeAuth()">✕</button>
-    <div class="alogo"><h2>🛍️ PakShop AI</h2><p>Login to save history & wishlist</p></div>
+    <button class="acls" onclick="closeAuth()">&#x2715;</button>
+    <div class="alogo"><h2>&#x1F6CD;&#xFE0F; PakShop AI</h2><p>Login to save history &amp; wishlist</p></div>
     <div class="atabs">
       <button class="atab active" id="tl" onclick="switchTab('l')">Login</button>
       <button class="atab" id="tr" onclick="switchTab('r')">Register</button>
     </div>
     <div id="lform">
       <div class="fg"><label>Email</label><input type="email" id="le" placeholder="you@example.com"></div>
-      <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="••••••••"></div>
-      <button class="sbtn2" onclick="doLogin()">Login →</button>
+      <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+      <button class="sbtn2" onclick="doLogin()">Login &rarr;</button>
       <div class="aerr" id="lerr"></div>
     </div>
     <div id="rform" style="display:none">
@@ -213,40 +183,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <div class="fg"><label>Email</label><input type="email" id="re" placeholder="you@example.com"></div>
       <div class="fg">
         <label>Password</label>
-        <input type="password" id="rp" placeholder="Min 6 chars"
-          onfocus="document.getElementById('hbox').style.display='block'"
-          oninput="chkPass(this.value)">
+        <input type="password" id="rp" placeholder="Min 6 chars" onfocus="document.getElementById('hbox').style.display='block'" oninput="chkPass(this.value)">
         <div class="hbox" id="hbox">
-          <div class="hi" id="hl">❌ At least 6 characters</div>
-          <div class="hi" id="hc">❌ At least 1 capital letter</div>
-          <div class="hi" id="hn">❌ At least 1 number</div>
+          <div class="hi" id="hl">&#x274C; At least 6 characters</div>
+          <div class="hi" id="hc">&#x274C; At least 1 capital letter</div>
+          <div class="hi" id="hn">&#x274C; At least 1 number</div>
         </div>
       </div>
-      <button class="sbtn2" onclick="doRegister()">Create Account →</button>
+      <button class="sbtn2" onclick="doRegister()">Create Account &rarr;</button>
       <div class="aerr" id="rerr"></div>
     </div>
   </div>
 </div>
-
 <div id="toast"></div>
-
-<!-- SIDEBAR -->
 <div id="sidebar">
   <div class="brand">
-    <div class="brand-ic">🛍️</div>
+    <div class="brand-ic">&#x1F6CD;&#xFE0F;</div>
     <div class="brand-tx"><h2>PakShop AI</h2><p>Smart Shopping</p></div>
   </div>
   <div class="nav-lbl">Menu</div>
-  <div class="nav-item active" onclick="showPage('chat',this)"><span class="ic">🏠</span> Home</div>
-  <div class="nav-item" onclick="showPage('categories',this)"><span class="ic">📂</span> Categories <span class="nbadge">3</span></div>
-  <div class="nav-item" onclick="showPage('saved',this)"><span class="ic">❤️</span> Saved Items <span class="nbadge" id="scnt">0</span></div>
-  <div class="nav-item" onclick="showPage('orders',this)"><span class="ic">📋</span> Orders</div>
-  <div class="nav-item" onclick="showPage('delivery',this)"><span class="ic">🚚</span> Delivery Tracker</div>
+  <div class="nav-item active" onclick="showPage('chat',this)"><span class="ic">&#x1F3E0;</span> Home</div>
+  <div class="nav-item" onclick="showPage('categories',this)"><span class="ic">&#x1F4C2;</span> Categories <span class="nbadge">3</span></div>
+  <div class="nav-item" onclick="showPage('saved',this)"><span class="ic">&#x2764;&#xFE0F;</span> Saved Items <span class="nbadge" id="scnt">0</span></div>
+  <div class="nav-item" onclick="showPage('orders',this)"><span class="ic">&#x1F4CB;</span> Orders</div>
+  <div class="nav-item" onclick="showPage('delivery',this)"><span class="ic">&#x1F69A;</span> Delivery Tracker</div>
   <div class="sdiv"></div>
   <div class="nav-lbl">Tools</div>
-  <div class="nav-item" onclick="showPage('budget',this)"><span class="ic">💰</span> Budget Planner</div>
-  <div class="nav-item" onclick="showPage('settings',this)"><span class="ic">⚙️</span> Settings</div>
-  <div class="nav-item" onclick="showPage('help',this)"><span class="ic">❓</span> Help & Support</div>
+  <div class="nav-item" onclick="showPage('budget',this)"><span class="ic">&#x1F4B0;</span> Budget Planner</div>
+  <div class="nav-item" onclick="showPage('settings',this)"><span class="ic">&#x2699;&#xFE0F;</span> Settings</div>
+  <div class="nav-item" onclick="showPage('help',this)"><span class="ic">&#x2753;</span> Help &amp; Support</div>
   <div class="sdiv"></div>
   <div class="u-card" id="ucard" onclick="openAuth()">
     <div class="u-card-in">
@@ -255,28 +220,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     </div>
   </div>
 </div>
-
-<!-- MAIN -->
 <div id="main">
   <div id="hdr">
     <div class="hl">
-      <button class="tog" onclick="toggleSidebar()">☰</button>
-      <div class="ht">
-        <h1>🛍️ Pakistan's Shopping Assistant</h1>
-        <p>Live prices · Daraz · Telemart · Homeshopping</p>
-      </div>
+      <button class="tog" onclick="toggleSidebar()">&#x2630;</button>
+      <div class="ht"><h1>&#x1F6CD;&#xFE0F; Pakistan's Shopping Assistant</h1><p>Live prices &middot; Daraz &middot; Telemart &middot; Homeshopping</p></div>
     </div>
     <div class="hr">
-      <div class="cpill">🇵🇰 Pakistan ▾</div>
-      <button class="thbtn" id="thbtn" onclick="toggleTheme()">🌙</button>
+      <button class="thbtn" id="thbtn" onclick="toggleTheme()">&#x1F319;</button>
       <div id="authhdr"><button class="lbtn" onclick="openAuth()">Login / Register</button></div>
     </div>
   </div>
-
-  <!-- CHAT PAGE -->
   <div id="page-chat" style="display:flex;flex:1;flex-direction:column;overflow:hidden;">
     <div id="welcome" style="padding:16px 24px 0;flex-shrink:0;">
-      <h2 id="welch" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;">👋 Hello, Guest!</h2>
+      <h2 id="welch" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;">&#x1F44B; Hello, Guest!</h2>
       <p style="font-size:12px;color:var(--text3);margin-top:3px;">What are you looking to buy today?</p>
     </div>
     <div id="chips" style="padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">
@@ -289,602 +246,300 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     <div id="chat-area"></div>
     <div id="iarea">
       <div id="iwrap">
-        <textarea id="uinput"
-          placeholder="Ask me anything… (English ya Urdu mein) 🇵🇰"
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"
-          oninput="autoRes(this)"></textarea>
-        <button class="ibtn" id="vbtn" onclick="toggleVoice()" title="Voice input 🎤">🎤</button>
-        <button class="ibtn" id="sbtn" onclick="sendMsg()">➤</button>
+        <textarea id="uinput" placeholder="Ask me anything... (English ya Urdu mein)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" oninput="autoRes(this)"></textarea>
+        <button class="ibtn" id="vbtn" onclick="toggleVoice()" title="Voice input">&#x1F3A4;</button>
+        <button class="ibtn" id="sbtn" onclick="sendMsg()">&#x27A4;</button>
       </div>
     </div>
   </div>
-
-  <!-- CATEGORIES PAGE -->
   <div id="page-categories" class="page">
-    <div class="page-title">📂 Categories</div>
-    <div class="page-sub">Browse products by category on Daraz, Telemart & Homeshopping</div>
+    <div class="page-title">&#x1F4C2; Categories</div>
+    <div class="page-sub">Browse by category on Daraz, Telemart &amp; Homeshopping</div>
     <div class="pcard-grid">
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartphone under 50k')">
-        <h3>📱 Mobiles & Tablets</h3>
-        <p>Smartphones, tablets, accessories from top brands</p>
-      </div>
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best laptop for students under 80k')">
-        <h3>💻 Laptops & Computers</h3>
-        <p>Laptops, PCs, gaming rigs, peripherals</p>
-      </div>
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best wireless earbuds under 5000')">
-        <h3>🎧 Audio & Earphones</h3>
-        <p>Earbuds, headphones, speakers, soundbars</p>
-      </div>
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best home appliances deals')">
-        <h3>🏠 Home Appliances</h3>
-        <p>AC, fridge, washing machine, kitchen items</p>
-      </div>
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best gaming accessories in Pakistan')">
-        <h3>🎮 Gaming</h3>
-        <p>Consoles, controllers, gaming chairs, headsets</p>
-      </div>
-      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartwatch under 15000')">
-        <h3>⌚ Wearables</h3>
-        <p>Smartwatches, fitness bands, smart glasses</p>
-      </div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartphone under 50k')"><h3>&#x1F4F1; Mobiles &amp; Tablets</h3><p>Smartphones, tablets, accessories from top brands</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best laptop for students under 80k')"><h3>&#x1F4BB; Laptops &amp; Computers</h3><p>Laptops, PCs, gaming rigs, peripherals</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best wireless earbuds under 5000')"><h3>&#x1F3A7; Audio &amp; Earphones</h3><p>Earbuds, headphones, speakers, soundbars</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best home appliances deals')"><h3>&#x1F3E0; Home Appliances</h3><p>AC, fridge, washing machine, kitchen items</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best gaming accessories in Pakistan')"><h3>&#x1F3AE; Gaming</h3><p>Consoles, controllers, gaming chairs, headsets</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="goChat('Best smartwatch under 15000')"><h3>&#x231A; Wearables</h3><p>Smartwatches, fitness bands, smart glasses</p></div>
     </div>
   </div>
-
-  <!-- SAVED PAGE -->
   <div id="page-saved" class="page">
-    <div class="page-title">❤️ Saved Items</div>
-    <div class="page-sub">Your wishlist — products you saved</div>
+    <div class="page-title">&#x2764;&#xFE0F; Saved Items</div>
+    <div class="page-sub">Your wishlist</div>
     <div id="saved-list"></div>
   </div>
-
-  <!-- ORDERS PAGE -->
   <div id="page-orders" class="page">
-    <div class="page-title">📋 Orders</div>
-    <div class="page-sub">Track your recent orders from all platforms</div>
-    <div class="info-card">
-      <h3>No orders yet</h3>
-      <p>Your order history will appear here after you purchase products through PakShop AI links.</p>
-    </div>
-  </div>
-
-  <!-- DELIVERY PAGE -->
-  <div id="page-delivery" class="page">
-    <div class="page-title">🚚 Delivery Tracker</div>
-    <div class="page-sub">Estimated delivery times for Pakistan platforms</div>
+    <div class="page-title">&#x1F4CB; Orders</div>
+    <div class="page-sub">Manage your orders</div>
+    <div class="info-card" style="border:1px solid #F59E0B44;background:#F59E0B08;margin-bottom:12px;"><h3 style="color:#F59E0B;margin-bottom:6px;">&#x2139;&#xFE0F; How Orders Work</h3><p>PakShop AI redirects you to Daraz, Telemart, or Homeshopping to complete your purchase. Orders are placed directly on those platforms.</p></div>
     <div class="pcard-grid">
-      <div class="info-card"><h3>🟠 Daraz</h3><p>2–3 working days · PKR 199 shipping · COD available · 7-day return</p></div>
-      <div class="info-card"><h3>🟣 Telemart</h3><p>3–5 working days · PKR 150 shipping · COD available · 3-day return</p></div>
-      <div class="info-card"><h3>🔵 Homeshopping</h3><p>2–4 working days · Free shipping on 2000+ · COD available · 5-day return</p></div>
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://www.daraz.pk/account/order/list/','_blank')"><h3>&#x1F7E0; Daraz Orders</h3><p>View order history on Daraz.pk</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Open Daraz Orders &#x2197;</div></div>
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://telemart.pk/account/orders','_blank')"><h3>&#x1F7E3; Telemart Orders</h3><p>View order history on Telemart.pk</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Open Telemart Orders &#x2197;</div></div>
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://homeshopping.pk/account','_blank')"><h3>&#x1F7E2; Homeshopping Orders</h3><p>View order history on Homeshopping.pk</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Open Homeshopping &#x2197;</div></div>
     </div>
   </div>
-
-  <!-- BUDGET PAGE -->
+  <div id="page-delivery" class="page">
+    <div class="page-title">&#x1F69A; Delivery Tracker</div>
+    <div class="page-sub">Track your orders directly on each platform</div>
+    <div class="info-card" style="border:1px solid #6366F144;background:#6366F108;margin-bottom:14px;"><h3 style="color:var(--accent2);margin-bottom:6px;">&#x1F4E6; How to Track</h3><p style="font-size:12px;color:var(--text3);line-height:1.7;">Use your order ID on the respective platform to track in real-time.</p></div>
+    <div class="pcard-grid">
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://www.daraz.pk/account/order/list/','_blank')"><h3>&#x1F7E0; Track on Daraz</h3><p>2-3 days &middot; PKR 99-199 shipping &middot; COD &middot; 7-day return</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Track Order &#x2197;</div></div>
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://telemart.pk/account/orders','_blank')"><h3>&#x1F7E3; Track on Telemart</h3><p>3-5 days &middot; PKR 150 shipping &middot; COD &middot; 3-day return</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Track Order &#x2197;</div></div>
+      <div class="info-card" style="cursor:pointer" onclick="window.open('https://homeshopping.pk/account','_blank')"><h3>&#x1F7E2; Track on Homeshopping</h3><p>2-4 days &middot; Free on PKR 2000+ &middot; COD &middot; 5-day return</p><div style="margin-top:10px;font-size:12px;color:var(--accent2);">Track Order &#x2197;</div></div>
+    </div>
+  </div>
   <div id="page-budget" class="page">
-    <div class="page-title">💰 Budget Planner</div>
-    <div class="page-sub">Set your budget and find best products in that range</div>
+    <div class="page-title">&#x1F4B0; Budget Planner</div>
+    <div class="page-sub">Set your budget and find best products</div>
     <div class="info-card" style="max-width:420px;">
       <h3 style="margin-bottom:14px;">Select Budget Range</h3>
-      <div id="bdgt-disp" style="font-size:16px;font-weight:600;color:var(--accent2);margin-bottom:12px;">PKR 10,000 – 50,000</div>
+      <div id="bdgt-disp" style="font-size:16px;font-weight:600;color:var(--accent2);margin-bottom:12px;">PKR 10,000 - 50,000</div>
       <input type="range" id="bslider" style="width:100%;accent-color:var(--accent);" min="5000" max="200000" value="50000" step="1000" oninput="updBudget(this.value)">
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px;"><span>5K</span><span>2 Lakh</span></div>
-      <button class="sbtn2" style="margin-top:16px;" onclick="goChat('Best products within my budget PKR '+document.getElementById('bslider').value)">Find Products in this Budget →</button>
+      <button class="sbtn2" style="margin-top:16px;" onclick="goChat('Best products within my budget PKR ' + document.getElementById('bslider').value)">Find Products in this Budget &rarr;</button>
     </div>
   </div>
-
-  <!-- SETTINGS PAGE -->
   <div id="page-settings" class="page">
-    <div class="page-title">⚙️ Settings</div>
-    <div class="page-sub">Customize your PakShop AI experience</div>
-    <div class="info-card" style="max-width:420px;">
-      <h3 style="margin-bottom:12px;">Theme</h3>
-      <button class="sbtn2" onclick="toggleTheme()">Toggle Dark / Light Mode</button>
-    </div>
-    <div class="info-card" style="max-width:420px;margin-top:12px;">
-      <h3 style="margin-bottom:8px;">Language</h3>
-      <p style="color:var(--text3);font-size:12px;">PakShop AI supports English and Urdu. Just type in any language!</p>
-    </div>
-    <div class="info-card" style="max-width:420px;margin-top:12px;">
-      <h3 style="margin-bottom:8px;">Account</h3>
-      <p style="color:var(--text3);font-size:12px;margin-bottom:10px;">Manage your login and saved data</p>
-      <button class="sbtn2" onclick="openAuth()">Login / Register</button>
-    </div>
+    <div class="page-title">&#x2699;&#xFE0F; Settings</div>
+    <div class="page-sub">Customize your experience</div>
+    <div class="info-card" style="max-width:420px;"><h3 style="margin-bottom:12px;">Theme</h3><button class="sbtn2" onclick="toggleTheme()">Toggle Dark / Light Mode</button></div>
+    <div class="info-card" style="max-width:420px;margin-top:12px;"><h3 style="margin-bottom:8px;">Language</h3><p style="color:var(--text3);font-size:12px;">PakShop AI supports English and Urdu!</p></div>
+    <div class="info-card" style="max-width:420px;margin-top:12px;"><h3 style="margin-bottom:8px;">Account</h3><p style="color:var(--text3);font-size:12px;margin-bottom:10px;">Manage your login and saved data</p><button class="sbtn2" onclick="openAuth()">Login / Register</button></div>
   </div>
-
-  <!-- HELP PAGE -->
   <div id="page-help" class="page">
-    <div class="page-title">❓ Help & Support</div>
+    <div class="page-title">&#x2753; Help &amp; Support</div>
     <div class="page-sub">Get help using PakShop AI</div>
     <div class="pcard-grid">
-      <div class="info-card"><h3>💬 How to search?</h3><p>Just type your query in the chat — like "Best phone under 30k" or any product name.</p></div>
-      <div class="info-card"><h3>🎤 Voice Search</h3><p>Click the mic button and speak in English or Urdu. We support both!</p></div>
-      <div class="info-card"><h3>❤️ Saving Items</h3><p>Click the heart icon on any product card to save it to your wishlist.</p></div>
-      <div class="info-card"><h3>🔗 Buy Links</h3><p>Click "View on Daraz/Telemart" to go directly to that product's page.</p></div>
+      <div class="info-card"><h3>&#x1F4AC; How to search?</h3><p>Type your query like "Best phone under 30k" or any product name.</p></div>
+      <div class="info-card"><h3>&#x1F3A4; Voice Search</h3><p>Click the mic button and speak in English or Urdu.</p></div>
+      <div class="info-card"><h3>&#x2764;&#xFE0F; Saving Items</h3><p>Click the heart icon on any product card to save to wishlist.</p></div>
+      <div class="info-card"><h3>&#x1F517; Buy Links</h3><p>Click product cards or "View on Platform" to go directly to that product.</p></div>
     </div>
   </div>
 </div>
-
-<!-- RIGHT PRODUCT PANEL -->
 <div id="ppanel">
-  <div class="phdr">
-    <h3>✨ Top Picks For You</h3>
-    <span id="psub">Ask AI to see results</span>
-  </div>
+  <div class="phdr"><h3>&#x2728; Top Picks For You</h3><span id="psub">Ask AI to see results</span></div>
   <div id="pcontent">
-    <div class="pempty">
-      <div class="ei">🛒</div>
-      <p>Ask the AI about any product — results, prices & direct buy links will appear here!</p>
-    </div>
+    <div class="pempty"><div class="ei">&#x1F6D2;</div><p>Ask the AI about any product - results, prices &amp; buy links appear here!</p></div>
   </div>
 </div>
-
 <script>
-// ── CONFIG ──
-const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1')
-  ? 'http://localhost:8000' : location.origin;
+const API=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:8000':location.origin;
+const PLATFORMS=['Daraz','Telemart','Homeshopping'];
+const PC={Daraz:'#F77F00',Telemart:'#7C3AED',Homeshopping:'#059669'};
 
-// ONLY Daraz, Telemart, Homeshopping
-const PLATFORMS = ['Daraz','Telemart','Homeshopping'];
-const PC = {Daraz:'#F77F00',Telemart:'#7C3AED',Homeshopping:'#059669'};
+// FIXED platform search URLs
+function getPlatformSearchUrl(platform,productName){
+  const clean=productName.replace(/under\s+\d+\s*k/gi,'').replace(/\b(best|cheap|good|top)\b/gi,'').replace(/\s+/g,' ').trim();
+  const q=encodeURIComponent(clean);
+  if(platform==='Daraz') return 'https://www.daraz.pk/catalog/?q='+q;
+  if(platform==='Telemart') return 'https://www.telemart.pk/search?query='+q;
+  if(platform==='Homeshopping') return 'https://homeshopping.pk/?s='+q;
+  return '#';
+}
+function getPlatformProductsUrl(platform){
+  if(platform==='Daraz') return 'https://www.daraz.pk/catalog/';
+  if(platform==='Telemart') return 'https://www.telemart.pk/';
+  if(platform==='Homeshopping') return 'https://homeshopping.pk/';
+  return '#';
+}
 
-// Product images by category (royalty-free placeholder URLs using picsum / direct product images)
-const PROD_IMGS = {
-  phone: [
-    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80',
-    'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=200&q=80',
-    'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80'
-  ],
-  laptop: [
-    'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80',
-    'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=200&q=80',
-    'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80'
-  ],
-  earbuds: [
-    'https://images.unsplash.com/photo-1590658165737-15a047b7c085?w=200&q=80',
-    'https://images.unsplash.com/photo-1605464315542-bda3e2f4e605?w=200&q=80',
-    'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=200&q=80'
-  ],
-  watch: [
-    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=200&q=80',
-    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80',
-    'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=200&q=80'
-  ],
-  general: [
-    'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=200&q=80',
-    'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&q=80',
-    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80'
-  ]
+const PROD_IMGS={
+  phone:['https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&q=80','https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80','https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=300&q=80'],
+  iphone:['https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=300&q=80','https://images.unsplash.com/photo-1592286927505-1def25115558?w=300&q=80','https://images.unsplash.com/photo-1574755393849-623942496936?w=300&q=80'],
+  samsung:['https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300&q=80','https://images.unsplash.com/photo-1603739903239-8b6e64c3b185?w=300&q=80','https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=300&q=80'],
+  laptop:['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80','https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=300&q=80','https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300&q=80'],
+  earbuds:['https://images.unsplash.com/photo-1590658165737-15a047b7c085?w=300&q=80','https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=300&q=80','https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&q=80'],
+  headphone:['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80','https://images.unsplash.com/photo-1491927570842-0261e477d937?w=300&q=80','https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&q=80'],
+  watch:['https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300&q=80','https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80','https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80'],
+  tv:['https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80','https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80','https://images.unsplash.com/photo-1461151304267-38535e780c79?w=300&q=80'],
+  general:['https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80','https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=300&q=80','https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&q=80']
 };
 
-let token = localStorage.getItem('pak_tok');
-let currentUser = JSON.parse(localStorage.getItem('pak_usr')||'null');
-let sessionId = null;
-// FIX: full conversation history maintained for context
-let chatHistory = [];
-let greetedThisSession = false;
-let saved = JSON.parse(localStorage.getItem('pak_saved')||'[]');
-let recog = null, isRec = false, sideOpen = true, isDark = true;
-let currentPage = 'chat';
+let token=localStorage.getItem('pak_tok');
+let currentUser=JSON.parse(localStorage.getItem('pak_usr')||'null');
+let sessionId=null,chatHistory=[],greetedThisSession=false;
+let saved=JSON.parse(localStorage.getItem('pak_saved')||'[]');
+let recog=null,isRec=false,sideOpen=true,isDarkMode=true;
 
-window.onload = () => {
-  if(token && currentUser) showLoggedIn();
-  updateSaved();
-  initVoice();
-};
+window.onload=()=>{if(token&&currentUser)showLoggedIn();updateSaved();initVoice();};
 
-// ── PAGE NAVIGATION ──
-function showPage(page, navEl) {
-  currentPage = page;
-  // Hide all pages
-  document.getElementById('page-chat').style.display = 'none';
+function showPage(page,navEl){
+  document.getElementById('page-chat').style.display='none';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  // Show right page
-  if(page === 'chat') {
-    document.getElementById('page-chat').style.display = 'flex';
-    // Also show product panel
-    document.getElementById('ppanel').style.display = 'flex';
-  } else {
-    document.getElementById('page-'+page).classList.add('active');
-    // Hide product panel for non-chat pages
-    document.getElementById('ppanel').classList.add('closed');
-    if(page === 'saved') renderSavedPage();
-  }
-  // Update nav active state
+  if(page==='chat'){document.getElementById('page-chat').style.display='flex';document.getElementById('ppanel').classList.remove('closed');}
+  else{document.getElementById('page-'+page).classList.add('active');document.getElementById('ppanel').classList.add('closed');if(page==='saved')renderSavedPage();}
   document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-  if(navEl) navEl.classList.add('active');
-
-  // Show panel again when going back to chat
-  if(page === 'chat') document.getElementById('ppanel').classList.remove('closed');
+  if(navEl)navEl.classList.add('active');
 }
-
-function goChat(query) {
-  showPage('chat', document.querySelector('.nav-item'));
+function goChat(query){
+  showPage('chat',document.querySelectorAll('.nav-item')[0]);
   document.querySelectorAll('.nav-item')[0].classList.add('active');
-  setTimeout(()=>{
-    document.getElementById('uinput').value = query;
-    sendMsg();
-  }, 100);
+  setTimeout(()=>{document.getElementById('uinput').value=query;sendMsg();},100);
 }
+function renderSavedPage(){
+  const el=document.getElementById('saved-list');
+  if(!saved.length){el.innerHTML='<div class="info-card"><h3>No saved items</h3><p>Heart any product to save it here!</p></div>';return;}
+  el.innerHTML=saved.map((name,i)=>'<div class="info-card" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;"><div><h3 style="font-size:13px;">'+name+'</h3><p>Saved item</p></div><button onclick="removeSaved('+i+')" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;">Remove</button></div>').join('');
+}
+function removeSaved(i){saved.splice(i,1);localStorage.setItem('pak_saved',JSON.stringify(saved));updateSaved();renderSavedPage();}
 
-function renderSavedPage() {
-  const el = document.getElementById('saved-list');
-  if(!saved.length) { el.innerHTML='<div class="info-card"><h3>No saved items</h3><p>Heart any product to save it here!</p></div>'; return; }
-  el.innerHTML = saved.map((name,i)=>`
-    <div class="info-card" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-      <div><h3 style="font-size:13px;">${name}</h3><p>Saved item</p></div>
-      <button onclick="removeSaved(${i})" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;">Remove</button>
-    </div>`).join('');
-}
-
-function removeSaved(i) {
-  saved.splice(i,1);
-  localStorage.setItem('pak_saved',JSON.stringify(saved));
-  updateSaved(); renderSavedPage();
-}
-
-// ── AUTH ──
-function openAuth() { document.getElementById('aoverlay').classList.add('show'); switchTab('l'); }
-function closeAuth() { document.getElementById('aoverlay').classList.remove('show'); }
-function switchTab(t) {
-  ['l','r'].forEach(x=>{
-    document.getElementById('t'+x).classList.toggle('active',x===t);
-    document.getElementById(x+'form').style.display=x===t?'block':'none';
-  });
-}
-function chkPass(v) {
-  const s=(id,ok,tx)=>{const e=document.getElementById(id);e.textContent=(ok?'✅':'❌')+' '+tx;e.className='hi'+(ok?' ok':'');};
-  s('hl',v.length>=6,'At least 6 characters');
-  s('hc',/[A-Z]/.test(v),'At least 1 capital letter');
-  s('hn',/[0-9]/.test(v),'At least 1 number');
+function openAuth(){document.getElementById('aoverlay').classList.add('show');switchTab('l');}
+function closeAuth(){document.getElementById('aoverlay').classList.remove('show');}
+function switchTab(t){['l','r'].forEach(x=>{document.getElementById('t'+x).classList.toggle('active',x===t);document.getElementById(x+'form').style.display=x===t?'block':'none';});}
+function chkPass(v){
+  const s=(id,ok,tx)=>{const e=document.getElementById(id);e.textContent=(ok?'OK':'X')+' '+tx;e.className='hi'+(ok?' ok':'');};
+  s('hl',v.length>=6,'At least 6 characters');s('hc',/[A-Z]/.test(v),'At least 1 capital letter');s('hn',/[0-9]/.test(v),'At least 1 number');
 }
 function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
 
-async function doLogin() {
-  const email=document.getElementById('le').value.trim();
-  const pass=document.getElementById('lp').value;
-  if(!email||!pass) return showErr('lerr','Please fill all fields');
-  try {
-    const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
-    const d=await r.json();
-    if(!r.ok) return showErr('lerr',d.detail||'Login failed');
-    token=d.token; currentUser={name:d.name,email:d.email};
-    localStorage.setItem('pak_tok',token);
-    localStorage.setItem('pak_usr',JSON.stringify(currentUser));
-    closeAuth(); showLoggedIn(); toast('Welcome back, '+d.name+'! 👋');
-  } catch(e){showErr('lerr','Server error — backend running?');}
+async function doLogin(){
+  const email=document.getElementById('le').value.trim(),pass=document.getElementById('lp').value;
+  if(!email||!pass)return showErr('lerr','Please fill all fields');
+  try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});const d=await r.json();if(!r.ok)return showErr('lerr',d.detail||'Login failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();toast('Welcome back, '+d.name+'!');}catch(e){showErr('lerr','Server error!');}
+}
+async function doRegister(){
+  const name=document.getElementById('rn').value.trim(),email=document.getElementById('re').value.trim(),pass=document.getElementById('rp').value;
+  if(!name||!email||!pass)return showErr('rerr','Please fill all fields');
+  if(pass.length<6)return showErr('rerr','Password min 6 chars');
+  if(!/[A-Z]/.test(pass))return showErr('rerr','Add 1 capital letter');
+  if(!/[0-9]/.test(pass))return showErr('rerr','Add 1 number');
+  try{const r=await fetch(API+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pass})});const d=await r.json();if(!r.ok)return showErr('rerr',d.detail||'Register failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();toast('Welcome '+d.name+'!');}catch(e){showErr('rerr','Server error!');}
 }
 
-async function doRegister() {
-  const name=document.getElementById('rn').value.trim();
-  const email=document.getElementById('re').value.trim();
-  const pass=document.getElementById('rp').value;
-  if(!name||!email||!pass) return showErr('rerr','Please fill all fields');
-  if(pass.length<6) return showErr('rerr','Password min 6 chars');
-  if(!/[A-Z]/.test(pass)) return showErr('rerr','Add 1 capital letter');
-  if(!/[0-9]/.test(pass)) return showErr('rerr','Add 1 number');
-  try {
-    const r=await fetch(API+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pass})});
-    const d=await r.json();
-    if(!r.ok) return showErr('rerr',d.detail||'Register failed');
-    token=d.token; currentUser={name:d.name,email:d.email};
-    localStorage.setItem('pak_tok',token);
-    localStorage.setItem('pak_usr',JSON.stringify(currentUser));
-    closeAuth(); showLoggedIn(); toast('Account created! Welcome '+d.name+' 🎉');
-  } catch(e){showErr('rerr','Server error — backend running?');}
-}
-
-function showLoggedIn() {
+function showLoggedIn(){
   const ini=currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('uav').textContent=ini;
   document.getElementById('uname').textContent=currentUser.name;
   document.getElementById('uemail').textContent=currentUser.email;
-  document.getElementById('welch').textContent='👋 Hello, '+currentUser.name.split(' ')[0]+'!';
-  document.getElementById('authhdr').innerHTML=`
-    <span style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);">👤 ${currentUser.name}</span>
-    <button onclick="doLogout()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;margin-left:6px;">Logout</button>`;
-  document.getElementById('ucard').onclick = null;
+  document.getElementById('welch').textContent='Hello, '+currentUser.name.split(' ')[0]+'!';
+  const nm=currentUser.name,em=currentUser.email;
+  const hdr=document.getElementById('authhdr');hdr.innerHTML='';
+  const wrap=document.createElement('div');wrap.style.cssText='position:relative;display:inline-block;';
+  const btn=document.createElement('button');btn.type='button';btn.textContent=nm+' v';
+  btn.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;';
+  btn.onclick=toggleProfileMenu;
+  const menu=document.createElement('div');menu.id='profile-menu';
+  menu.style.cssText='display:none;position:absolute;right:0;top:38px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:160px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);';
+  const emailEl=document.createElement('div');emailEl.style.cssText='padding:8px 10px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);margin-bottom:4px;word-break:break-all;';emailEl.textContent=em;
+  const items=[{icon:'Saved',label:'Items',fn:()=>{showPage('saved',null);toggleProfileMenu();}},{icon:'Settings',label:'',fn:()=>{showPage('settings',null);toggleProfileMenu();}},{icon:'Logout',label:'',fn:doLogout,red:true}];
+  menu.appendChild(emailEl);
+  items.forEach(item=>{const d=document.createElement('div');d.style.cssText='padding:8px 10px;font-size:13px;cursor:pointer;border-radius:6px;color:'+(item.red?'#EF4444':'var(--text2)')+';';d.textContent=item.icon+' '+item.label;d.onmouseover=()=>d.style.background=item.red?'#EF444415':'var(--surface2)';d.onmouseout=()=>d.style.background='none';d.onclick=item.fn;menu.appendChild(d);});
+  wrap.append(btn,menu);hdr.appendChild(wrap);
+  document.getElementById('ucard').onclick=null;
+  setTimeout(()=>{document.addEventListener('click',function cm(e){if(!e.target.closest('#authhdr')){const m=document.getElementById('profile-menu');if(m)m.style.display='none';document.removeEventListener('click',cm);}});},100);
+}
+function toggleProfileMenu(){const m=document.getElementById('profile-menu');if(m)m.style.display=m.style.display==='none'?'block':'none';}
+function doLogout(){localStorage.removeItem('pak_tok');localStorage.removeItem('pak_usr');token=null;currentUser=null;sessionId=null;chatHistory=[];greetedThisSession=false;document.getElementById('uav').textContent='?';document.getElementById('uname').textContent='Guest User';document.getElementById('uemail').textContent='Click to login';document.getElementById('welch').textContent='Hello, Guest!';document.getElementById('authhdr').innerHTML='<button class="lbtn" onclick="openAuth()">Login / Register</button>';document.getElementById('ucard').onclick=openAuth;toast('Logged out successfully');}
+
+function useChip(el){document.getElementById('chips').style.display='none';document.getElementById('uinput').value=el.textContent;sendMsg();}
+function autoRes(el){el.style.height='24px';el.style.overflowY='hidden';if(el.scrollHeight>24){el.style.height=Math.min(el.scrollHeight,120)+'px';if(el.scrollHeight>120)el.style.overflowY='auto';}}
+
+async function sendMsg(){
+  const inp=document.getElementById('uinput');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';inp.style.height='24px';document.getElementById('chips').style.display='none';
+  if(!sessionId&&token){try{const r=await fetch(API+'/sessions/create',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({message:msg})});sessionId=(await r.json()).session_id;}catch(e){}}
+  addBubble('u',msg);chatHistory.push({role:'user',content:msg});
+  const tid='t'+Date.now();addTyping(tid);
+  try{
+    const hdrs={'Content-Type':'application/json'};if(token)hdrs['Authorization']='Bearer '+token;
+    const r=await fetch(API+'/chat',{method:'POST',headers:hdrs,body:JSON.stringify({message:msg,session_id:token?sessionId:null,chat_history:chatHistory.slice(-20),user_id:currentUser?currentUser.email:null})});
+    const d=await r.json();rmEl(tid);
+    let resp=(d.response||'').trim();
+    if(!greetedThisSession){greetedThisSession=true;if(!resp.toLowerCase().includes('assalam')&&!resp.toLowerCase().includes('hello'))resp='Assalam-o-Alaikum!\n\n'+resp;}
+    else{resp=resp.replace(/assalam[\s-]*o[\s-]*alaikum[!,.]?\s*/gi,'').trim();resp=resp.replace(/^(hello|hi|salam)[!,.]?\s*/gi,'').trim();}
+    addBubble('b',resp,buildPlatformLinks());chatHistory.push({role:'assistant',content:resp});renderPanel(d,msg);
+  }catch(e){rmEl(tid);addBubble('b','Server connect nahi ho saka!');}
 }
 
-function doLogout() {
-  localStorage.removeItem('pak_tok'); localStorage.removeItem('pak_usr');
-  token=null; currentUser=null; sessionId=null;
-  chatHistory=[]; greetedThisSession=false;
-  document.getElementById('uav').textContent='?';
-  document.getElementById('uname').textContent='Guest User';
-  document.getElementById('uemail').textContent='Click to login';
-  document.getElementById('welch').textContent='👋 Hello, Guest!';
-  document.getElementById('authhdr').innerHTML=`<button class="lbtn" onclick="openAuth()">Login / Register</button>`;
-  document.getElementById('ucard').onclick=openAuth;
-  toast('Logged out successfully');
-}
-
-// ── CHAT ──
-function useChip(el) {
-  document.getElementById('chips').style.display='none';
-  document.getElementById('uinput').value=el.textContent;
-  sendMsg();
-}
-
-// FIX: proper auto resize — no premature wrapping
-function autoRes(el) {
-  el.style.height = '24px';
-  el.style.overflowY = 'hidden';
-  if (el.scrollHeight > 24) {
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-    if (el.scrollHeight > 120) el.style.overflowY = 'auto';
-  }
-}
-
-async function sendMsg() {
-  const inp = document.getElementById('uinput');
-  const msg = inp.value.trim();
-  if(!msg) return;
-  inp.value=''; inp.style.height='22px';
-  document.getElementById('chips').style.display='none';
-
-  // Create session if logged in and no session yet
-  if(!sessionId && token) {
-    try {
-      const r=await fetch(API+'/sessions/create',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-        body:JSON.stringify({message:msg})
-      });
-      const d=await r.json();
-      sessionId=d.session_id;
-    } catch(e){}
-  }
-
-  addBubble('u', msg);
-
-  // FIX: add to history before sending so backend gets full context
-  chatHistory.push({role:'user', content:msg});
-
-  const tid='t'+Date.now();
-  addTyping(tid);
-
-  try {
-    const hdrs={'Content-Type':'application/json'};
-    if(token) hdrs['Authorization']='Bearer '+token;
-
-    // FIX: send FULL chat history so agent remembers conversation
-    const body = {
-      message: msg,
-      session_id: token ? sessionId : null,
-      chat_history: chatHistory.slice(-20),  // last 20 msgs for full context
-      user_id: currentUser ? currentUser.email : null  // helps backend identify same user
-    };
-
-    const r = await fetch(API+'/chat',{method:'POST',headers:hdrs,body:JSON.stringify(body)});
-    const d = await r.json();
-    rmEl(tid);
-
-    let resp = (d.response||'').trim();
-
-    // FIX: Only greet ONCE per session — never again
-    if(!greetedThisSession) {
-      greetedThisSession = true;
-      if(!resp.toLowerCase().includes('assalam') && !resp.toLowerCase().includes('hello') && !resp.toLowerCase().includes('hi')) {
-        resp = 'Assalam-o-Alaikum! 👋\n\n' + resp;
-      }
-    } else {
-      // Remove any salam from subsequent responses
-      resp = resp.replace(/assalam[\s-]*o[\s-]*alaikum[!,.]?\s*/gi,'').trim();
-      resp = resp.replace(/^(hello|hi|salam)[!,.]?\s*/gi,'').trim();
-    }
-
-    addBubble('b', resp);
-    chatHistory.push({role:'assistant', content:resp});
-
-    // Render products if platform_links available
-    renderPanel(d, msg);
-
-  } catch(e) {
-    rmEl(tid);
-    addBubble('b','⚠️ Server connect nahi ho saka. Backend check karo ya localhost:8000 pe run karo!');
-  }
-}
-
-function addBubble(role, text) {
+function escHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function escAttr(s){return escHTML(s).replace(/`/g,'&#96;');}
+function addBubble(role,text,links){
   const area=document.getElementById('chat-area');
   const time=new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'});
-  const row=document.createElement('div');
-  row.className='mrow '+(role==='u'?'u':'');
-  // FIX: properly format text — replace \n with <br>, keep whitespace
-  const fmt = text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-  row.innerHTML=`<div class="av ${role}">${role==='u'?'👤':'🤖'}</div>
-    <div>
-      <div class="bub ${role}">${fmt}</div>
-      <div class="mtime">${role==='u'?'You':'ShopWise AI'} · ${time}</div>
-    </div>`;
-  area.appendChild(row);
-  area.scrollTop=area.scrollHeight;
+  const row=document.createElement('div');row.className='mrow '+(role==='u'?'u':'');
+  const fmt=escHTML(text).replace(/\n/g,'<br>');
+  const drop=role==='b'?renderLinksDropdown(links):'';
+  row.innerHTML='<div class="av '+role+'">'+(role==='u'?'&#128100;':'&#129302;')+'</div><div class="mstack"><div class="bub '+role+'">'+fmt+'</div>'+drop+'<div class="mtime">'+(role==='u'?'You':'ShopWise AI')+' · '+time+'</div></div>';
+  area.appendChild(row);area.scrollTop=area.scrollHeight;
 }
-
-function addTyping(id) {
-  const area=document.getElementById('chat-area');
-  const row=document.createElement('div');
-  row.className='mrow'; row.id=id;
-  row.innerHTML=`<div class="av b">🤖</div>
-    <div class="bub b" style="padding:0;max-width:200px">
-      <div class="typbub"><span></span><span></span><span></span><span class="typlbl">Thinking…</span></div>
-    </div>`;
-  area.appendChild(row);
-  area.scrollTop=area.scrollHeight;
+function buildPlatformLinks(){
+  return PLATFORMS.reduce((acc,plat)=>{acc[plat]=getPlatformProductsUrl(plat);return acc;},{});
 }
+function renderLinksDropdown(links){
+  const finalLinks=buildPlatformLinks('',links);
+  const rows=PLATFORMS.map(plat=>{
+    const url=finalLinks[plat],col=PC[plat]||'var(--accent)';
+    return '<a href="'+escAttr(url)+'" target="_blank" rel="noopener"><span><span class="pi" style="display:inline-flex;background:'+col+'20;color:'+col+';margin-right:8px;">'+escHTML(plat[0])+'</span>'+escHTML(plat)+'</span><span>Open</span></a>';
+  }).join('');
+  return '<details class="link-drop"><summary>Shopping website links</summary><div class="link-menu">'+rows+'</div></details>';
+}
+function addTyping(id){const area=document.getElementById('chat-area');const row=document.createElement('div');row.className='mrow';row.id=id;row.innerHTML='<div class="av b">AI</div><div class="bub b" style="padding:0;max-width:200px"><div class="typbub"><span></span><span></span><span></span><span class="typlbl">Thinking...</span></div></div>';area.appendChild(row);area.scrollTop=area.scrollHeight;}
 function rmEl(id){document.getElementById(id)?.remove();}
 
-// ── PRODUCT PANEL ──
-function getCategory(q) {
-  const l=q.toLowerCase();
-  if(/iphone|samsung|oppo|vivo|realme|tecno|infinix|phone|mobile|smartphone/.test(l)) return 'phone';
-  if(/laptop|notebook|macbook|pc|computer/.test(l)) return 'laptop';
-  if(/earbuds|earphone|headphone|speaker|audio|jbl|anker|airpod/.test(l)) return 'earbuds';
-  if(/watch|smartwatch|band|fitness/.test(l)) return 'watch';
-  return 'general';
+function getCategory(q){const l=q.toLowerCase();if(/iphone|apple/.test(l))return 'iphone';if(/samsung/.test(l))return 'samsung';if(/headphone|overhead|sennheiser/.test(l))return 'headphone';if(/earbuds|earphone|airpod|tws|anker/.test(l))return 'earbuds';if(/laptop|notebook|macbook/.test(l))return 'laptop';if(/\btv\b|television|led tv/.test(l))return 'tv';if(/watch|smartwatch|band|fitness/.test(l))return 'watch';if(/phone|mobile|smartphone|oppo|vivo|realme|tecno|infinix/.test(l))return 'phone';return 'general';}
+function getProductNames(q,cat){const l=q.toLowerCase();if(l.includes('iphone'))return['iPhone 13','iPhone 12','iPhone 11'];if(l.includes('samsung'))return['Samsung Galaxy A54','Samsung Galaxy A34','Samsung Galaxy M34'];if(l.includes('realme'))return['Realme C67','Realme 12 Pro','Realme GT 6'];if(l.includes('infinix'))return['Infinix GT 10 Pro','Infinix Note 30','Infinix Hot 40'];if(l.includes('tecno'))return['Tecno Pova 5 Pro','Tecno Spark 20','Tecno Camon 20'];if(cat==='phone')return['Infinix GT 10 Pro','Poco X6 Pro','Samsung Galaxy A54'];if(cat==='laptop')return['HP Laptop 15s','Lenovo IdeaPad 3','Dell Inspiron 15'];if(cat==='earbuds')return['JBL Tune 230NC','Anker Soundcore Q30','Samsung Galaxy Buds2'];if(cat==='watch')return['Samsung Galaxy Watch 6','Huawei Band 8','Xiaomi Band 8'];return['Top Result 1','Top Result 2','Top Result 3'];}
+
+function extractNames(response,query,cat){
+  const found=[];
+  for(const line of response.split('\n')){const m=line.match(/^\d+\.\s+([A-Z][\w\s]{3,40}?)(?:\s*[,-]|\s+\d|$)/);if(m&&m[1]&&m[1].trim().length>3&&!/^(here|sure|these|some|great|check|you|the|for|on|in|at|and|or)/i.test(m[1].trim()))found.push(m[1].trim());}
+  const pats=[/\b(Edifier\s+[A-Z0-9]+[\w\s]{0,15})/g,/\b(Anker\s+Soundcore[\w\s]{0,20})/g,/\b(Samsung\s+Galaxy[\w\s]{0,20})/g,/\b(iPhone\s+\d+[\w\s]{0,10})/g,/\b(Xiaomi\s+[A-Z][\w\s]{0,20})/g,/\b(Infinix\s+[A-Z][\w\s]{0,15})/g,/\b(Tecno\s+[A-Z][\w\s]{0,15})/g,/\b(Realme\s+[A-Z0-9][\w\s]{0,15})/g,/\b(HP\s+[A-Z][\w\s]{0,20})/g,/\b(Dell\s+[A-Z][\w\s]{0,20})/g,/\b(Lenovo\s+[A-Z][\w\s]{0,20})/g,/\b(JBL\s+[A-Z][\w\s]{0,15})/g,/\b(Sony\s+[A-Z][\w\s]{0,15})/g,/\b(QCY\s+[A-Z0-9][\w\s]{0,10})/g,/\b(Huawei\s+[A-Z][\w\s]{0,15})/g,/\b(Oppo\s+[A-Z][\w\s]{0,15})/g,/\b(Vivo\s+[A-Z][\w\s]{0,15})/g,/\b(Poco\s+[A-Z][\w\s]{0,15})/g];
+  for(const pat of pats){for(const m of [...response.matchAll(pat)]){const name=m[1].trim().replace(/[.,;]$/,'');if(!found.includes(name))found.push(name);}}
+  const unique=[...new Set(found)].slice(0,3);
+  if(unique.length===0)return getProductNames(query,cat);
+  const fb=getProductNames(query,cat);while(unique.length<3)unique.push(fb[unique.length]||'Top Product');
+  return unique.slice(0,3);
 }
+function mockPrice(i,cat){const b={phone:[49999,48499,44999],laptop:[89999,75999,69999],earbuds:[8499,6999,12999],watch:[29999,5999,8999],general:[15999,12499,9999]};return(b[cat]||b.general)[i%3]+Math.floor(Math.random()*400-200);}
 
-function getProductNames(q, cat) {
-  const l=q.toLowerCase();
-  if(l.includes('iphone')) return ['iPhone 13','iPhone 12','iPhone 11'];
-  if(l.includes('samsung')) return ['Samsung Galaxy A54','Samsung Galaxy A34','Samsung Galaxy M34'];
-  if(l.includes('realme')) return ['Realme C67','Realme 12 Pro','Realme GT 6'];
-  if(l.includes('infinix')) return ['Infinix GT 10 Pro','Infinix Note 30','Infinix Hot 40'];
-  if(l.includes('tecno')) return ['Tecno Pova 5 Pro','Tecno Spark 20','Tecno Camon 20'];
-  if(cat==='phone') return ['Infinix GT 10 Pro','Poco X6 Pro','Samsung Galaxy A54'];
-  if(cat==='laptop') return ['HP Laptop 15s','Lenovo IdeaPad 3','Dell Inspiron 15'];
-  if(cat==='earbuds') return ['JBL Tune 230NC','Anker Soundcore Q30','Samsung Galaxy Buds2'];
-  if(cat==='watch') return ['Samsung Galaxy Watch 6','Huawei Band 8','Xiaomi Band 8'];
-  return ['Top Result 1','Top Result 2','Top Result 3'];
-}
-
-function mockPrice(i, cat) {
-  const bases={phone:[49999,48499,44999],laptop:[89999,75999,69999],earbuds:[8499,6999,12999],watch:[29999,5999,8999],general:[15999,12499,9999]};
-  const arr=bases[cat]||bases.general;
-  return arr[i%arr.length]+Math.floor(Math.random()*400-200);
-}
-
-function renderPanel(data, query) {
-  const panel=document.getElementById('pcontent');
-  const sub=document.getElementById('psub');
-  const links=data.platform_links||{};
-  // FIX: Only use Daraz, Telemart, Homeshopping
-  const plats=PLATFORMS.filter(p=>links[p]||true); // always show our 3 platforms
-  sub.textContent=plats.length+' platforms searched';
-  panel.innerHTML='';
-
-  const cat=getCategory(query);
-  const names=getProductNames(query, cat);
+function renderPanel(data,query){
+  const panel=document.getElementById('pcontent');panel.innerHTML='';document.getElementById('psub').textContent='3 platforms searched';
+  const cat=getCategory(query);const names=extractNames(data.response||'',query,cat);
   const imgs=PROD_IMGS[cat]||PROD_IMGS.general;
   const badges=[['best','Best Overall'],['val','Best Value'],['bat','Best Battery']];
-
   names.forEach((name,i)=>{
-    const price=mockPrice(i,cat);
-    const plat=PLATFORMS[i%3];
-    // FIX: use real link from backend if available, else construct platform URL
-    const link=links[plat]||getPlatformSearchUrl(plat,name);
-    const rating=(4.1+Math.random()*.5).toFixed(1);
-    const rev=Math.floor(700+Math.random()*800);
-    const stars='★'.repeat(Math.round(rating))+'☆'.repeat(5-Math.round(rating));
-    const isSaved=saved.includes(name);
-    const col=PC[plat]||'#6366F1';
-    const [bc,bt]=badges[i]||['',''];
+    const price=mockPrice(i,cat),plat=PLATFORMS[i%3];
+    const link=getPlatformSearchUrl(plat,name);
+    const rating=(4.1+Math.random()*.5).toFixed(1),rev=Math.floor(700+Math.random()*800);
+    const stars='&#9733;'.repeat(Math.round(rating))+'&#9734;'.repeat(5-Math.round(rating));
+    const isSaved=saved.includes(name),col=PC[plat];
+    const [bc,bt]=badges[i]||['best','Top Pick'];
     const imgUrl=imgs[i%imgs.length];
-
-    const card=document.createElement('div');
-    card.className='pcard';
-    card.innerHTML=`
-      <div class="badge-row">${bc?`<span class="bdg ${bc}">${bt}</span>`:''}</div>
-      <div class="cimg">
-        <img src="${imgUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<div class=noimg>📱</div>'">
-        <button class="wbtn" onclick="toggleSave(event,'${name}',this)">${isSaved?'❤️':'🤍'}</button>
-      </div>
-      <div class="cbody">
-        <div class="cname">${name}</div>
-        <div class="cstars"><span class="st">${stars}</span><span class="cnt">${rating} (${rev})</span></div>
-        <div class="cprice">PKR ${price.toLocaleString()}</div>
-        <div class="cplat"><div class="pdot" style="background:${col}"></div><span class="plbl">${plat}</span></div>
-        <button class="vbtn" onclick="goLink('${link}','${plat}')">View on ${plat} ↗</button>
-      </div>`;
+    const fb='https://via.placeholder.com/200x130/1E293B/6366F1?text='+encodeURIComponent(name.split(' ').slice(0,2).join('+'));
+    const card=document.createElement('div');card.className='pcard';
+    card.onclick=(e)=>{if(!e.target.closest('.wbtn')&&!e.target.closest('.vbtn'))goLink(link,plat);};
+    card.innerHTML='<div class="badge-row"><span class="bdg '+bc+'">'+escHTML(bt)+'</span><button class="wbtn" type="button" title="Save item">'+(isSaved?'&hearts;':'♡')+'</button></div>'+
+      '<div class="card-main"><div class="cimg"><img src="'+escAttr(imgUrl)+'" alt="'+escAttr(name)+'" onerror="this.src=\''+fb+'\'"></div>'+
+      '<div class="cbody"><div class="cname">'+escHTML(name)+'</div>'+
+      '<div class="cstars"><span class="st">'+stars+'</span><span class="cnt">'+rating+' ('+rev+')</span></div>'+
+      '<div class="cprice">PKR '+price.toLocaleString()+'</div>'+
+      '<div class="cplat"><div class="pdot" style="background:'+col+'"></div><span class="plbl">'+escHTML(plat)+'</span></div>'+
+      '<button class="vbtn" type="button">Open '+escHTML(plat)+'</button></div></div>';
     panel.appendChild(card);
+    card.querySelector('.wbtn').addEventListener('click',(e)=>toggleSave(e,name,card.querySelector('.wbtn')));
+    card.querySelector('.vbtn').addEventListener('click',(e)=>{e.stopPropagation();goLink(link,plat);});
   });
-
-  // Price comparison — only our 3 platforms
-  const csec=document.createElement('div'); csec.className='csec';
+  // Price comparison - no clickable links, plain text only
+  const csec=document.createElement('div');csec.className='csec';
   const rows=PLATFORMS.map((p,i)=>{
-    const pr=mockPrice(i,cat);
-    const dy=p==='Daraz'?'2-3 Days':p==='Telemart'?'3-5 Days':'2-4 Days';
-    const rt=(4.0+Math.random()*.5).toFixed(1);
-    const col=PC[p];
-    const lnk=links[p]||getPlatformSearchUrl(p,names[0]);
-    return `<tr>
-      <td><div class="pcell"><div class="pi" style="background:${col}20;color:${col}">${p[0]}</div>
-        <a href="${lnk}" target="_blank" style="color:var(--text);text-decoration:none;font-size:12px">${p}</a></div></td>
-      <td style="font-weight:500">PKR ${pr.toLocaleString()}</td>
-      <td style="color:var(--text3);font-size:11px">${dy}</td>
-      <td><span class="sr">★ ${rt}</span></td></tr>`;
+    const pr=mockPrice(i,cat),dy=p==='Daraz'?'2-3 Days':p==='Telemart'?'3-5 Days':'2-4 Days',rt=(4.0+Math.random()*.5).toFixed(1),col=PC[p];
+    return '<tr><td><div class="pcell"><div class="pi" style="background:'+col+'20;color:'+col+'">'+p[0]+'</div><span style="font-size:12px;color:var(--text)">'+p+'</span></div></td><td style="font-weight:500">PKR '+pr.toLocaleString()+'</td><td style="color:var(--text3);font-size:11px">'+dy+'</td><td><span class="sr">&#9733; '+rt+'</span></td></tr>';
   }).join('');
-  csec.innerHTML=`<h4>📊 Price Comparison</h4>
-    <table class="ctbl"><thead><tr><th>Platform</th><th>Price</th><th>Delivery</th><th>Rating</th></tr></thead>
-    <tbody>${rows}</tbody></table>`;
+  csec.innerHTML='<h4>Price Comparison</h4><p class="ctbl-note">Click product cards above to shop</p><table class="ctbl"><thead><tr><th>Platform</th><th>Est. Price</th><th>Delivery</th><th>Rating</th></tr></thead><tbody>'+rows+'</tbody></table>';
   panel.appendChild(csec);
 }
 
-function getPlatformSearchUrl(platform, query) {
-  const q=encodeURIComponent(query);
-  if(platform==='Daraz') return `https://www.daraz.pk/catalog/?q=${q}`;
-  if(platform==='Telemart') return `https://telemart.pk/search?q=${q}`;
-  if(platform==='Homeshopping') return `https://homeshopping.pk/search?s=${q}`;
-  return '#';
-}
-
-function goLink(url, plat) {
-  if(!url||url==='#'){toast('Searching on '+plat+'…');return;}
-  window.open(url,'_blank');
-}
-
-// ── WISHLIST ──
-function toggleSave(e,name,btn) {
-  e.stopPropagation();
-  const idx=saved.indexOf(name);
-  if(idx===-1){saved.push(name);btn.textContent='❤️';toast(name+' saved! ❤️');}
-  else{saved.splice(idx,1);btn.textContent='🤍';toast('Removed from saved');}
-  localStorage.setItem('pak_saved',JSON.stringify(saved));
-  updateSaved();
-}
+function goLink(url,plat){if(!url||url==='#'){toast('Opening '+plat+'...');return;}window.open(url,'_blank','noopener');}
+function toggleSave(e,name,btn){e.stopPropagation();const idx=saved.indexOf(name);if(idx===-1){saved.push(name);btn.innerHTML='&hearts;';toast(name+' saved');}else{saved.splice(idx,1);btn.textContent='♡';toast('Removed from saved');}localStorage.setItem('pak_saved',JSON.stringify(saved));updateSaved();}
 function updateSaved(){document.getElementById('scnt').textContent=saved.length;}
 
-// ── VOICE INPUT ──
-function initVoice() {
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return;
-  recog=new SR();
-  recog.continuous=false; recog.interimResults=true; recog.lang='ur-PK';
-  recog.onresult=e=>{
-    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
-    document.getElementById('uinput').value=t;
-    autoRes(document.getElementById('uinput'));
-  };
-  recog.onend=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');};
-  recog.onerror=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');toast('Voice error, try again');};
-}
-function toggleVoice() {
-  if(!recog){toast('Voice not supported in this browser');return;}
-  if(isRec){recog.stop();}
-  else{recog.start();toast('🎤 Listening… (Urdu/English)');document.getElementById('vbtn').classList.add('rec');}
-  isRec=!isRec;
-}
-
-// ── UI HELPERS ──
-function toggleSidebar(){
-  sideOpen=!sideOpen;
-  document.getElementById('sidebar').classList.toggle('closed',!sideOpen);
-}
-
-let isDarkMode=true;
-function toggleTheme() {
-  isDarkMode=!isDarkMode;
-  const d=isDarkMode
-    ? {bg:'#0F172A',sf:'#1E293B',sf2:'#253347',tx:'#F1F5F9',t2:'#94A3B8',t3:'#64748B',bd:'rgba(255,255,255,0.07)'}
-    : {bg:'#F8FAFC',sf:'#FFFFFF',sf2:'#F1F5F9',tx:'#0F172A',t2:'#475569',t3:'#94A3B8',bd:'rgba(0,0,0,0.08)'};
-  const r=document.documentElement.style;
-  r.setProperty('--bg',d.bg); r.setProperty('--surface',d.sf);
-  r.setProperty('--surface2',d.sf2); r.setProperty('--text',d.tx);
-  r.setProperty('--text2',d.t2); r.setProperty('--text3',d.t3);
-  r.setProperty('--border',d.bd);
-  document.getElementById('thbtn').textContent=isDarkMode?'🌙':'☀️';
-}
-
-function updBudget(v) {
-  const vi=parseInt(v), mn=Math.round(vi*.2/1000)*1000;
-  document.getElementById('bdgt-disp').textContent=`PKR ${mn.toLocaleString()} – ${vi.toLocaleString()}`;
-}
-
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
-}
+function initVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;recog=new SR();recog.continuous=false;recog.interimResults=true;recog.lang='ur-PK';recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');document.getElementById('uinput').value=t;autoRes(document.getElementById('uinput'));};recog.onend=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');};recog.onerror=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');toast('Voice error, try again');};}
+function toggleVoice(){if(!recog){toast('Voice not supported');return;}if(isRec)recog.stop();else{recog.start();toast('Listening...');document.getElementById('vbtn').classList.add('rec');}isRec=!isRec;}
+function toggleSidebar(){sideOpen=!sideOpen;document.getElementById('sidebar').classList.toggle('closed',!sideOpen);}
+function toggleTheme(){isDarkMode=!isDarkMode;const d=isDarkMode?{bg:'#0F172A',sf:'#1E293B',sf2:'#253347',tx:'#F1F5F9',t2:'#94A3B8',t3:'#64748B',bd:'rgba(255,255,255,0.07)'}:{bg:'#F8FAFC',sf:'#FFFFFF',sf2:'#F1F5F9',tx:'#0F172A',t2:'#475569',t3:'#94A3B8',bd:'rgba(0,0,0,0.08)'};const r=document.documentElement.style;r.setProperty('--bg',d.bg);r.setProperty('--surface',d.sf);r.setProperty('--surface2',d.sf2);r.setProperty('--text',d.tx);r.setProperty('--text2',d.t2);r.setProperty('--text3',d.t3);r.setProperty('--border',d.bd);document.getElementById('thbtn').textContent=isDarkMode?'Moon':'Sun';}
+function updBudget(v){const vi=parseInt(v),mn=Math.round(vi*.2/1000)*1000;document.getElementById('bdgt-disp').textContent='PKR '+mn.toLocaleString()+' - '+vi.toLocaleString();}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 </script>
 </body>
 </html>
