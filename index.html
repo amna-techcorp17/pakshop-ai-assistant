@@ -363,7 +363,7 @@ let sessionId=null,chatHistory=[],greetedThisSession=false;
 let saved=JSON.parse(localStorage.getItem('pak_saved')||'[]');
 let recog=null,isRec=false,sideOpen=true,isDarkMode=true;
 
-window.onload=()=>{if(token&&currentUser)showLoggedIn();updateSaved();initVoice();};
+window.onload=()=>{if(token&&currentUser){showLoggedIn();restoreLatestChat();}updateSaved();initVoice();};
 
 function showPage(page,navEl){
   document.getElementById('page-chat').style.display='none';
@@ -397,7 +397,7 @@ function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e
 async function doLogin(){
   const email=document.getElementById('le').value.trim(),pass=document.getElementById('lp').value;
   if(!email||!pass)return showErr('lerr','Please fill all fields');
-  try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});const d=await r.json();if(!r.ok)return showErr('lerr',d.detail||'Login failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();toast('Welcome back, '+d.name+'!');}catch(e){showErr('lerr','Server error!');}
+  try{const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});const d=await r.json();if(!r.ok)return showErr('lerr',d.detail||'Login failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();restoreLatestChat();toast('Welcome back, '+d.name+'!');}catch(e){showErr('lerr','Server error!');}
 }
 async function doRegister(){
   const name=document.getElementById('rn').value.trim(),email=document.getElementById('re').value.trim(),pass=document.getElementById('rp').value;
@@ -405,7 +405,7 @@ async function doRegister(){
   if(pass.length<6)return showErr('rerr','Password min 6 chars');
   if(!/[A-Z]/.test(pass))return showErr('rerr','Add 1 capital letter');
   if(!/[0-9]/.test(pass))return showErr('rerr','Add 1 number');
-  try{const r=await fetch(API+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pass})});const d=await r.json();if(!r.ok)return showErr('rerr',d.detail||'Register failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();toast('Welcome '+d.name+'!');}catch(e){showErr('rerr','Server error!');}
+  try{const r=await fetch(API+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password:pass})});const d=await r.json();if(!r.ok)return showErr('rerr',d.detail||'Register failed');token=d.token;currentUser={name:d.name,email:d.email};localStorage.setItem('pak_tok',token);localStorage.setItem('pak_usr',JSON.stringify(currentUser));closeAuth();showLoggedIn();restoreLatestChat();toast('Welcome '+d.name+'!');}catch(e){showErr('rerr','Server error!');}
 }
 
 function showLoggedIn(){
@@ -431,7 +431,35 @@ function showLoggedIn(){
   setTimeout(()=>{document.addEventListener('click',function cm(e){if(!e.target.closest('#authhdr')){const m=document.getElementById('profile-menu');if(m)m.style.display='none';document.removeEventListener('click',cm);}});},100);
 }
 function toggleProfileMenu(){const m=document.getElementById('profile-menu');if(m)m.style.display=m.style.display==='none'?'block':'none';}
-function doLogout(){localStorage.removeItem('pak_tok');localStorage.removeItem('pak_usr');token=null;currentUser=null;sessionId=null;chatHistory=[];greetedThisSession=false;document.getElementById('uav').textContent='?';document.getElementById('uname').textContent='Guest User';document.getElementById('uemail').textContent='Click to login';document.getElementById('welch').textContent='Hello, Guest!';document.getElementById('authhdr').innerHTML='<button class="lbtn" onclick="openAuth()">Login / Register</button>';document.getElementById('ucard').onclick=openAuth;toast('Logged out successfully');}
+async function restoreLatestChat(){
+  if(!token)return;
+  try{
+    const sr=await fetch(API+'/sessions',{headers:{'Authorization':'Bearer '+token}});
+    if(!sr.ok)return;
+    const sd=await sr.json();
+    const latest=(sd.sessions||[])[0];
+    if(!latest)return;
+    sessionId=latest.id;
+    const mr=await fetch(API+'/sessions/'+sessionId+'/messages',{headers:{'Authorization':'Bearer '+token}});
+    if(!mr.ok)return;
+    const md=await mr.json(),msgs=md.messages||[];
+    if(!msgs.length)return;
+    const area=document.getElementById('chat-area');
+    area.innerHTML='';
+    document.getElementById('chips').style.display='none';
+    chatHistory=[];
+    msgs.forEach(m=>{
+      const role=m.role==='user'?'u':'b';
+      chatHistory.push({role:m.role,content:m.content});
+      addBubble(role,m.content,role==='b'?buildPlatformLinks():null);
+    });
+    greetedThisSession=msgs.some(m=>m.role==='assistant');
+    const lastUser=[...msgs].reverse().find(m=>m.role==='user');
+    const lastAssistant=[...msgs].reverse().find(m=>m.role==='assistant');
+    if(lastUser)renderPanel({response:lastAssistant?lastAssistant.content:''},lastUser.content);
+  }catch(e){}
+}
+function doLogout(){localStorage.removeItem('pak_tok');localStorage.removeItem('pak_usr');token=null;currentUser=null;sessionId=null;chatHistory=[];greetedThisSession=false;document.getElementById('chat-area').innerHTML='';document.getElementById('chips').style.display='flex';document.getElementById('uav').textContent='?';document.getElementById('uname').textContent='Guest User';document.getElementById('uemail').textContent='Click to login';document.getElementById('welch').textContent='Hello, Guest!';document.getElementById('authhdr').innerHTML='<button class="lbtn" onclick="openAuth()">Login / Register</button>';document.getElementById('ucard').onclick=openAuth;toast('Logged out successfully');}
 
 function useChip(el){document.getElementById('chips').style.display='none';document.getElementById('uinput').value=el.textContent;sendMsg();}
 function autoRes(el){el.style.height='24px';el.style.overflowY='hidden';if(el.scrollHeight>24){el.style.height=Math.min(el.scrollHeight,120)+'px';if(el.scrollHeight>120)el.style.overflowY='auto';}}
@@ -537,7 +565,7 @@ function updateSaved(){document.getElementById('scnt').textContent=saved.length;
 function initVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;recog=new SR();recog.continuous=false;recog.interimResults=true;recog.lang='ur-PK';recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');document.getElementById('uinput').value=t;autoRes(document.getElementById('uinput'));};recog.onend=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');};recog.onerror=()=>{isRec=false;document.getElementById('vbtn').classList.remove('rec');toast('Voice error, try again');};}
 function toggleVoice(){if(!recog){toast('Voice not supported');return;}if(isRec)recog.stop();else{recog.start();toast('Listening...');document.getElementById('vbtn').classList.add('rec');}isRec=!isRec;}
 function toggleSidebar(){sideOpen=!sideOpen;document.getElementById('sidebar').classList.toggle('closed',!sideOpen);}
-function toggleTheme(){isDarkMode=!isDarkMode;const d=isDarkMode?{bg:'#0F172A',sf:'#1E293B',sf2:'#253347',tx:'#F1F5F9',t2:'#94A3B8',t3:'#64748B',bd:'rgba(255,255,255,0.07)'}:{bg:'#F8FAFC',sf:'#FFFFFF',sf2:'#F1F5F9',tx:'#0F172A',t2:'#475569',t3:'#94A3B8',bd:'rgba(0,0,0,0.08)'};const r=document.documentElement.style;r.setProperty('--bg',d.bg);r.setProperty('--surface',d.sf);r.setProperty('--surface2',d.sf2);r.setProperty('--text',d.tx);r.setProperty('--text2',d.t2);r.setProperty('--text3',d.t3);r.setProperty('--border',d.bd);document.getElementById('thbtn').textContent=isDarkMode?'Moon':'Sun';}
+function toggleTheme(){isDarkMode=!isDarkMode;const d=isDarkMode?{bg:'#0F172A',sf:'#1E293B',sf2:'#253347',tx:'#F1F5F9',t2:'#94A3B8',t3:'#64748B',bd:'rgba(255,255,255,0.07)'}:{bg:'#F8FAFC',sf:'#FFFFFF',sf2:'#F1F5F9',tx:'#0F172A',t2:'#475569',t3:'#94A3B8',bd:'rgba(0,0,0,0.08)'};const r=document.documentElement.style;r.setProperty('--bg',d.bg);r.setProperty('--surface',d.sf);r.setProperty('--surface2',d.sf2);r.setProperty('--text',d.tx);r.setProperty('--text2',d.t2);r.setProperty('--text3',d.t3);r.setProperty('--border',d.bd);document.getElementById('thbtn').innerHTML=isDarkMode?'&#x1F319;':'&#x2600;&#xFE0F;';}
 function updBudget(v){const vi=parseInt(v),mn=Math.round(vi*.2/1000)*1000;document.getElementById('bdgt-disp').textContent='PKR '+mn.toLocaleString()+' - '+vi.toLocaleString();}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 </script>
