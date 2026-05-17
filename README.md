@@ -145,12 +145,16 @@ A->>U: Final Recommendation
 
 ```text
  ---------------------------------------------------------
-| Sidebar |         AI Chat Area        | Product Panel  |
+| Sidebar |                  AI Chat Area        | Product Panel  |
  ---------------------------------------------------------
-| Home    | User: Best phone under 50k  | 📱 Samsung A15 |
-| History | AI: Here are best options   | ⭐ 4.5 Rating  |
-| Saved   | Thinking...                 | 💸 Rs. 48,999 |
-| Settings|                             | 🛒 Buy Now     |
+| Home             | User: Best phone under 50k  | 📱 Samsung A15   |
+| Categories       | AI: Here are best options   | ⭐ 4.5 Rating   |
+| Saved Items      | Thinking...                 | 💸 Rs. 48,999   |
+| Orders           |                             | Price Comparison |
+| Delivery Tracker |
+| Budget Planner   |
+| Settings         |
+| Help and Support |
  ---------------------------------------------------------
 ```
 
@@ -269,15 +273,13 @@ Daraz vs Telemart comparison
 
 # 🧩 Future Improvements
 
-- Voice Assistant 🎤
-- Live Product Cards 🛍️
 - AI Memory System 🧠
 - Personalized Recommendations
 - Real Product Images
 - Mobile Responsive Design
 - Deployment on Render/Vercel
 - Payment Integration
-- Wishlist & Saved Products
+
 
 ---
 
