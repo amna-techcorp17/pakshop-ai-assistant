@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: pakshop-ai-assistant
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SITE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: data/pakcommerce.db
+    disk:
+      name: pakshop-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

@@ -18,7 +18,7 @@ ALLOWED_PLATFORMS = ["Daraz", "Telemart", "Homeshopping"]
 
 PLATFORM_URLS = {
     "Daraz": "https://www.daraz.pk/catalog/?q=",
-    "Telemart": "https://telemart.pk/search?q=",
+    "Telemart": "https://www.telemart.pk/search?query=",
     "Homeshopping": "https://homeshopping.pk/search?s="
 }
 

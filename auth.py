@@ -6,13 +6,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+APP_ENV = os.getenv("APP_ENV", "development")
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key-change-in-production")
+if APP_ENV == "production" and SECRET_KEY == "fallback-secret-key-change-in-production":
+    raise RuntimeError("SECRET_KEY must be set in production")
 ALGORITHM = "HS256"
+DATABASE_PATH = os.getenv("DATABASE_PATH", "pakcommerce.db")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+def get_db_connection(check_same_thread=False):
+    db_dir = os.path.dirname(DATABASE_PATH)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
+    return sqlite3.connect(DATABASE_PATH, check_same_thread=check_same_thread)
+
 def init_auth_db():
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +39,6 @@ def init_auth_db():
     conn.close()
 
 def register_user(name, email, password):
-    print("RAW PASSWORD:", repr(password))
     password = str(password).strip()
 
     if len(password) < 6:
@@ -38,7 +47,7 @@ def register_user(name, email, password):
         password = password[:20]
 
     try:
-        conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+        conn = get_db_connection()
         c = conn.cursor()
         hashed = pwd_context.hash(password)
         c.execute(
@@ -61,7 +70,7 @@ def register_user(name, email, password):
         conn.close()
 
 def login_user(email, password):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("SELECT id, name, email, password FROM users WHERE email=?", (email,))
     user = c.fetchone()
@@ -84,7 +93,7 @@ def verify_token(token):
         return {"valid": False}
 
 def get_user_sessions(user_id):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("SELECT id, session_name, created_at FROM sessions WHERE user_id=? ORDER BY id DESC", (user_id,))
     sessions = c.fetchall()
@@ -92,7 +101,7 @@ def get_user_sessions(user_id):
     return sessions
 
 def create_session(user_id, name):
-    conn = sqlite3.connect('pakcommerce.db')
+    conn = get_db_connection()
     c = conn.cursor()
     keywords = ' '.join(name.split()[:3]) + '...'
     c.execute("INSERT INTO sessions (user_id, session_name, created_at) VALUES (?, ?, ?)",
@@ -103,7 +112,7 @@ def create_session(user_id, name):
     return session_id
 
 def delete_session(session_id, user_id):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("DELETE FROM messages WHERE session_id=?", (session_id,))
     c.execute("DELETE FROM sessions WHERE id=? AND user_id=?", (session_id, user_id))
@@ -111,7 +120,7 @@ def delete_session(session_id, user_id):
     conn.close()
 
 def save_message(session_id, role, content, platform_links=None):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("INSERT INTO messages (session_id, role, content, platform_links, timestamp) VALUES (?, ?, ?, ?, ?)",
               (session_id, role, content, json.dumps(platform_links) if platform_links else None,
@@ -120,7 +129,7 @@ def save_message(session_id, role, content, platform_links=None):
     conn.close()
 
 def get_messages(session_id):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("SELECT role, content, platform_links FROM messages WHERE session_id=? ORDER BY id", (session_id,))
     rows = c.fetchall()
@@ -128,7 +137,7 @@ def get_messages(session_id):
     return [{"role": r[0], "content": r[1], "platform_links": json.loads(r[2]) if r[2] else None} for r in rows]
 
 def is_first_session(user_id):
-    conn = sqlite3.connect('pakcommerce.db', check_same_thread=False)
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute("SELECT COUNT(*) FROM sessions WHERE user_id=?", (user_id,))
     count = c.fetchone()[0]

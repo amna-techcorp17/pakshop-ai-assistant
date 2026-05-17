@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse, Response
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 import uvicorn
@@ -14,11 +14,23 @@ from auth import (
 )
 from graph import run_agent
 
-app = FastAPI(title="PakShop AI", version="2.0")
+APP_ENV = os.getenv("APP_ENV", "development")
+SITE_URL = os.getenv("SITE_URL", "http://127.0.0.1:8000").rstrip("/")
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", "*").split(",")
+    if origin.strip()
+]
+
+app = FastAPI(
+    title="PakShop AI",
+    version="2.0",
+    description="Pakistan shopping assistant for comparing products across Daraz, Telemart, and Homeshopping.",
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,6 +45,27 @@ def serve_index():
     if os.path.exists("index.html"):
         return FileResponse("index.html")
     return {"message": "PakShop AI Backend Running"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "app": "PakShop AI", "environment": APP_ENV}
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+def robots():
+    return f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n"
+
+@app.get("/sitemap.xml")
+def sitemap():
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{SITE_URL}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+"""
+    return Response(content=xml, media_type="application/xml")
 
 # ── MODELS ──
 class RegisterModel(BaseModel):
@@ -159,4 +192,5 @@ def chat(data: ChatModel, user=Depends(get_current_user)):
     }
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=APP_ENV != "production")
