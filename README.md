@@ -206,20 +206,20 @@ pakshop-ai-assistant/
 
 # ⚙️ Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Python | Backend |
-| FastAPI | API Framework |
-| LangGraph | AI Workflow Engine |
-| LangChain | LLM Integration |
-| Groq | AI Model Provider |
+| Technology  | Purpose |
+|---          |---       |
+| Python      | Backend |
+| FastAPI     | API Framework |
+| LangGraph   | AI Workflow Engine |
+| LangChain   | LLM Integration |
+| Groq        | AI Model Provider |
 | HTML/CSS/JS | Frontend |
-| SQLite | Database |
-| JWT | Authentication |
+| SQLite      | Database |
+| JWT         | Authentication |
 
 ---
 
-# 🚀 Installation
+## 🚀 Installation
 
 ## 1️⃣ Clone Repository
 
