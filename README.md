@@ -160,10 +160,10 @@ A->>U: Final Recommendation
 
 ---
 
-# 📂 Project Structure
+## 📁 Project Structure
 
 ```bash
-pakistan-ecom-assistant/
+pakshop-ai-assistant/
 │
 ├── agents/
 │   ├── base_agent.py
@@ -177,13 +177,30 @@ pakistan-ecom-assistant/
 │   ├── style.css
 │   └── script.js
 │
+├── tools/
+│   └── # additional tool scripts
+│
+├── .env.example
+├── .gitignore
+├── DEPLOYMENT.md
+├── Procfile
 ├── app.py
-├── graph.py
 ├── auth.py
+├── chat_history.db
+├── e ommerce agent.py
+├── graph.py
 ├── index.html
+├── index.py
+├── main.py
+├── pakcommerce.db
+├── render.yaml
 ├── requirements.txt
-└── README.md
-```
+├── robots.txt
+├── runtime.txt
+├── setup.py
+├── sitemap.xml
+├── README.md
+└── LICENSE
 
 ---
 
