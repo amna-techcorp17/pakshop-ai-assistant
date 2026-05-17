@@ -203,8 +203,11 @@ pakshop-ai-assistant/
 └── LICENSE
 
 ---
+```
 
-# ⚙️ Tech Stack
+## ⚙️ Tech Stack
+
+```
 
 | Technology  | Purpose |
 |---          |---       |
@@ -219,9 +222,11 @@ pakshop-ai-assistant/
 
 ---
 
+```
+
 ## 🚀 Installation
 
-## 1️⃣ Clone Repository
+# 1️⃣ Clone Repository
 
 ```bash
 git clone https://github.com/amna-techcorp17/pakshop-ai-assistant.git
